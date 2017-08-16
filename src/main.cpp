@@ -12,17 +12,21 @@
 #include <fstream>
 #include <string>
 #include <math.h>
+#include <SOIL/SOIL.h>
 
 using namespace std;
 
 GLfloat vertices[] = {
-    0.0f, 0.5f, 1.0f, 0.0f, 0.0f,
-    0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-    -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-    -1.0f, 0.5f, 0.0f, 1.0f, 0.0f,
+    -0.5f, 0.5f, 0.0f, 0.0f,   // Top-left
+    0.5f, 0.5f, 1.0f, 0.0f,    // Top-right
+    0.5f, -0.5f, 1.0f, 1.0f,   // Bottom-right
+    -0.5f, -0.5f, 0.0f, 1.0f,  // Bottom-left
 };
 
-GLint elements[] = { 0, 1, 2, 2, 3, 0 };
+GLint elements[] = {
+    0, 1, 2,
+    2, 3, 0
+};
 
 char* loadFile(const char *fname) {
     ifstream::pos_type size;
@@ -45,6 +49,11 @@ char* loadFile(const char *fname) {
 }
 
 void init() {
+    // Create a Vertex Array Object to store the shader program's attribute linking information
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
     GLuint vbo;
     // Create a buffer, store its id in 'vbo'
     glGenBuffers(1, &vbo);
@@ -54,11 +63,6 @@ void init() {
 
     // Write our vertices to the active buffer
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Create a Vertex Array Object to store the shader program's attribute linking information
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
 
     GLuint ebo;
     glGenBuffers(1, &ebo);
@@ -108,14 +112,28 @@ void initShaders(GLuint &shaderProgram) {
 
     GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
     // 2, because we're sending x and y for each vertex
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
     glEnableVertexAttribArray(posAttrib);
 
-    GLint colorAttrib = glGetAttribLocation(shaderProgram, "color");
-    // 3, because we're sending r g b
-    glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
-    glEnableVertexAttribArray(colorAttrib);
-    
+    GLint texAttrib = glGetAttribLocation(shaderProgram, "texcoord");
+    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void*)(2*sizeof(float)));
+    glEnableVertexAttribArray(texAttrib);
+
+    GLuint tex;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+
+    int width, height;
+    unsigned char* image = SOIL_load_image("grass.png", &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    SOIL_free_image_data(image);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
 }
 
 void render() {
@@ -143,7 +161,7 @@ int main(int argc, char *argv[]) {
     sf::Window window(sf::VideoMode(2200, 1600), "Moo!", sf::Style::Close, settings);
 
     window.setFramerateLimit(60);
-    
+
     glewExperimental = GL_TRUE;
     glewInit();
 
@@ -152,10 +170,7 @@ int main(int argc, char *argv[]) {
     GLuint shaderProgram;
     initShaders(shaderProgram);
 
-    //GLint uniColor = glGetUniformLocation(shaderProgram, "triangleColor");
-
     bool running = true;
-    //auto t_start = std::chrono::high_resolution_clock::now();
 
     while (running) {
         sf::Event windowEvent;

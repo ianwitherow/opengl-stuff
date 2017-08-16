@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C103D431F43F84E00935C61 /* grass.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C103D421F43F84E00935C61 /* grass.png */; };
+		3C103D4B1F4404F600935C61 /* libSOIL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C103D4A1F4404F600935C61 /* libSOIL.dylib */; };
+		3C103D4D1F44050800935C61 /* libSOIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C103D4C1F44050800935C61 /* libSOIL.a */; };
 		3C94D7BF1F429B7A00F211FC /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C94D7BE1F429B7A00F211FC /* OpenGL.framework */; };
 		3C94D7C11F429B8100F211FC /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C94D7C01F429B8100F211FC /* GLUT.framework */; };
 		3C94D7C51F429CF500F211FC /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C94D7C41F429CF500F211FC /* libGLEW.2.1.0.dylib */; };
@@ -29,6 +32,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3C103D421F43F84E00935C61 /* grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grass.png; sourceTree = "<group>"; };
+		3C103D4A1F4404F600935C61 /* libSOIL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSOIL.dylib; path = ../../../../../../opt/local/lib/libSOIL.dylib; sourceTree = "<group>"; };
+		3C103D4C1F44050800935C61 /* libSOIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSOIL.a; path = ../../../../../../opt/local/lib/libSOIL.a; sourceTree = "<group>"; };
 		3C94D7BE1F429B7A00F211FC /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		3C94D7C01F429B8100F211FC /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		3C94D7C21F429CC300F211FC /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lib; path = ../../../../../../usr/local/Cellar/glew/2.1.0/lib; sourceTree = "<group>"; };
@@ -47,6 +53,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C103D4D1F44050800935C61 /* libSOIL.a in Frameworks */,
+				3C103D4B1F4404F600935C61 /* libSOIL.dylib in Frameworks */,
 				3C94D7C51F429CF500F211FC /* libGLEW.2.1.0.dylib in Frameworks */,
 				3C94D7C11F429B8100F211FC /* GLUT.framework in Frameworks */,
 				3C94D7BF1F429B7A00F211FC /* OpenGL.framework in Frameworks */,
@@ -59,6 +67,8 @@
 		3C94D7BD1F429B7900F211FC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3C103D4C1F44050800935C61 /* libSOIL.a */,
+				3C103D4A1F4404F600935C61 /* libSOIL.dylib */,
 				3C94D7C41F429CF500F211FC /* libGLEW.2.1.0.dylib */,
 				3C94D7C21F429CC300F211FC /* lib */,
 				3C94D7C01F429B8100F211FC /* GLUT.framework */,
@@ -107,6 +117,7 @@
 		3CA1E4C71F428E8D00B338EB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3C103D421F43F84E00935C61 /* grass.png */,
 				3C94D7CD1F42A01600F211FC /* minimal.vert */,
 				3C94D7CF1F42A04300F211FC /* minimal.frag */,
 			);
@@ -172,6 +183,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C103D431F43F84E00935C61 /* grass.png in Resources */,
 				3C94D7CE1F42A01600F211FC /* minimal.vert in Resources */,
 				3C94D7D01F42A04300F211FC /* minimal.frag in Resources */,
 			);
@@ -306,14 +318,16 @@
 					"$(inherited)",
 					/usr/local/Cellar/glew/2.1.0/include,
 					/usr/local/Cellar/freeglut/3.0.0/include,
+					/opt/local/include,
 				);
 				INFOPLIST_FILE = "src/MyProject-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks /usr/local/Cellar/glew/2.1.0/lib /usr/local/Cellar/freeglut/3.0.0/lib";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks /usr/local/Cellar/glew/2.1.0/lib /opt/local/lib /usr/local/Cellar/freeglut/3.0.0/lib";
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib/,
 					"$(inherited)",
 					/usr/local/Cellar/glew/2.1.0/lib,
 					/usr/local/Cellar/freeglut/3.0.0/lib,
+					/opt/local/lib,
 				);
 				MACH_O_TYPE = mh_execute;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -336,14 +350,16 @@
 					"$(inherited)",
 					/usr/local/Cellar/glew/2.1.0/include,
 					/usr/local/Cellar/freeglut/3.0.0/include,
+					/opt/local/include,
 				);
 				INFOPLIST_FILE = "src/MyProject-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks /usr/local/Cellar/glew/2.1.0/lib /usr/local/Cellar/freeglut/3.0.0/lib";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks /usr/local/Cellar/glew/2.1.0/lib /opt/local/lib /usr/local/Cellar/freeglut/3.0.0/lib";
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib/,
 					"$(inherited)",
 					/usr/local/Cellar/glew/2.1.0/lib,
 					/usr/local/Cellar/freeglut/3.0.0/lib,
+					/opt/local/lib,
 				);
 				MACH_O_TYPE = mh_execute;
 				OTHER_CPLUSPLUSFLAGS = (
