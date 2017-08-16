@@ -10,6 +10,8 @@
 		3C103D431F43F84E00935C61 /* grass.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C103D421F43F84E00935C61 /* grass.png */; };
 		3C103D4B1F4404F600935C61 /* libSOIL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C103D4A1F4404F600935C61 /* libSOIL.dylib */; };
 		3C103D4D1F44050800935C61 /* libSOIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C103D4C1F44050800935C61 /* libSOIL.a */; };
+		3C6C0DEA1F44130700A87ECD /* dirt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3C6C0DE91F44130700A87ECD /* dirt.jpg */; };
+		3C6C0DEC1F4418EE00A87ECD /* water.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3C6C0DEB1F4418EE00A87ECD /* water.frag */; };
 		3C94D7BF1F429B7A00F211FC /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C94D7BE1F429B7A00F211FC /* OpenGL.framework */; };
 		3C94D7C11F429B8100F211FC /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C94D7C01F429B8100F211FC /* GLUT.framework */; };
 		3C94D7C51F429CF500F211FC /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C94D7C41F429CF500F211FC /* libGLEW.2.1.0.dylib */; };
@@ -35,6 +37,8 @@
 		3C103D421F43F84E00935C61 /* grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grass.png; sourceTree = "<group>"; };
 		3C103D4A1F4404F600935C61 /* libSOIL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSOIL.dylib; path = ../../../../../../opt/local/lib/libSOIL.dylib; sourceTree = "<group>"; };
 		3C103D4C1F44050800935C61 /* libSOIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSOIL.a; path = ../../../../../../opt/local/lib/libSOIL.a; sourceTree = "<group>"; };
+		3C6C0DE91F44130700A87ECD /* dirt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dirt.jpg; sourceTree = "<group>"; };
+		3C6C0DEB1F4418EE00A87ECD /* water.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = water.frag; sourceTree = "<group>"; };
 		3C94D7BE1F429B7A00F211FC /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		3C94D7C01F429B8100F211FC /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		3C94D7C21F429CC300F211FC /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lib; path = ../../../../../../usr/local/Cellar/glew/2.1.0/lib; sourceTree = "<group>"; };
@@ -117,6 +121,8 @@
 		3CA1E4C71F428E8D00B338EB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3C6C0DEB1F4418EE00A87ECD /* water.frag */,
+				3C6C0DE91F44130700A87ECD /* dirt.jpg */,
 				3C103D421F43F84E00935C61 /* grass.png */,
 				3C94D7CD1F42A01600F211FC /* minimal.vert */,
 				3C94D7CF1F42A04300F211FC /* minimal.frag */,
@@ -185,6 +191,8 @@
 			files = (
 				3C103D431F43F84E00935C61 /* grass.png in Resources */,
 				3C94D7CE1F42A01600F211FC /* minimal.vert in Resources */,
+				3C6C0DEA1F44130700A87ECD /* dirt.jpg in Resources */,
+				3C6C0DEC1F4418EE00A87ECD /* water.frag in Resources */,
 				3C94D7D01F42A04300F211FC /* minimal.frag in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,7 +12,6 @@
 #include <fstream>
 #include <string>
 #include <math.h>
-#include <SOIL/SOIL.h>
 
 using namespace std;
 
@@ -88,7 +87,7 @@ void printShaderCompileResult(GLuint shader, const char* shaderName) {
 void initShaders(GLuint &shaderProgram) {
 
     const char* vertexSource = loadFile("minimal.vert");
-    const char* fragmentSource = loadFile("minimal.frag");
+    const char* fragmentSource = loadFile("water.frag");
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexSource, NULL);
@@ -119,20 +118,33 @@ void initShaders(GLuint &shaderProgram) {
     glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void*)(2*sizeof(float)));
     glEnableVertexAttribArray(texAttrib);
 
-    GLuint tex;
-    glGenTextures(1, &tex);
-    glBindTexture(GL_TEXTURE_2D, tex);
+    GLuint textures[2];
+    glGenTextures(2, textures);
 
-    int width, height;
-    unsigned char* image = SOIL_load_image("grass.png", &width, &height, 0, SOIL_LOAD_RGB);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    SOIL_free_image_data(image);
+    sf::Image image;
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
+    image.loadFromFile("water.jpg");
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+    glUniform1i(glGetUniformLocation(shaderProgram, "waterTexture"), 0);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
+    image.loadFromFile("dirt.jpg");
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+    glUniform1i(glGetUniformLocation(shaderProgram, "texDirt"), 1);
 
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 }
 
@@ -169,7 +181,11 @@ int main(int argc, char *argv[]) {
 
     GLuint shaderProgram;
     initShaders(shaderProgram);
+    
+    auto start = std::chrono::high_resolution_clock::now();
+    GLuint timeUniform = glGetUniformLocation(shaderProgram, "time");
 
+    
     bool running = true;
 
     while (running) {
@@ -188,7 +204,11 @@ int main(int argc, char *argv[]) {
                     break;
             }
         }
-
+        auto now = std::chrono::high_resolution_clock::now();
+        float time = std::chrono::duration_cast<std::chrono::duration<float>>(now - start).count();
+        
+        glUniform1f(timeUniform, (sin(time * 4.0f) + 1.0f) / 2.0f);
+        
         // Draw objects
         render();
 
