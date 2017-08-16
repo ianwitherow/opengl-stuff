@@ -18,8 +18,11 @@ using namespace std;
 GLfloat vertices[] = {
     0.0f, 0.5f, 1.0f, 0.0f, 0.0f,
     0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-    -0.5f, -0.5f, 0.0f, 0.0f, 1.0f
+    -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+    -1.0f, 0.5f, 0.0f, 1.0f, 0.0f,
 };
+
+GLint elements[] = { 0, 1, 2, 2, 3, 0 };
 
 char* loadFile(const char *fname) {
     ifstream::pos_type size;
@@ -56,6 +59,11 @@ void init() {
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
+
+    GLuint ebo;
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
 }
 
@@ -111,7 +119,7 @@ void initShaders(GLuint &shaderProgram) {
 }
 
 void render() {
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void reshape(int w, int h)
