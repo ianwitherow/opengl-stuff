@@ -20,6 +20,9 @@ GLuint triangleShaderProgram;
 GLuint squareVao;
 GLuint triangleVao;
 
+GLuint squareBuffer;
+GLuint triangleBuffer;
+
 GLfloat vertices[] = {
     -0.5f, 0.5f, 0.0f, 0.0f,   // Top-left
     0.5f, 0.5f, 1.0f, 0.0f,    // Top-right
@@ -110,7 +113,6 @@ void setupSquareShape() {
 	glGenVertexArrays(1, &squareVao);
     glBindVertexArray(squareVao);
 
-    GLuint squareBuffer;
     // Create a buffer, store its id in 'vbo'
     glGenBuffers(1, &squareBuffer);
 
@@ -160,7 +162,6 @@ void setupTriangleShape() {
 	glGenVertexArrays(1, &triangleVao);
     glBindVertexArray(triangleVao);
 
-    GLuint triangleBuffer;
     glGenBuffers(1, &triangleBuffer);
 
 	glBindBuffer(GL_ARRAY_BUFFER, triangleBuffer);
@@ -178,6 +179,26 @@ void setupTriangleShape() {
     glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
 }
 
+void moveSquare(float x, float y) {
+    printf("x: %f\n", x);
+    x = x * 0.1;
+    y = y * 0.1;
+    
+    printf("x now: %f\n", x);
+
+    for (int i = 0; i < sizeof(vertices) / sizeof(vertices[0]); i += 4) {
+        // Update x
+        printf("%f => %f\n", vertices[i], vertices[i] + x);
+        vertices[i] = vertices[i] + x;
+        // Update y
+        vertices[i + 1] = vertices[i + 1] + y;
+    }
+    
+    glBindBuffer(GL_ARRAY_BUFFER, squareBuffer);
+    
+    // Update the vertices in our squareBuffer
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+}
 
 void renderBg() {
 	glClearColor(0.2f, 0.3f, 0.4f, 0.0f);
@@ -234,14 +255,14 @@ int main(int argc, char *argv[]) {
     
     GLint e = glGetError();
     printf("%i\n", e);
-    
-    
+
+
 
     auto start = std::chrono::high_resolution_clock::now();
     GLuint sqTimeUniform = glGetUniformLocation(squareShaderProgram, "time");
     GLuint triTimeUniform = glGetUniformLocation(triangleShaderProgram, "time");
 
-    
+
     bool running = true;
 
     while (running) {
@@ -252,8 +273,26 @@ int main(int argc, char *argv[]) {
                     running = false;
                     break;
                 case sf::Event::KeyPressed:
-                    if (windowEvent.key.code == sf::Keyboard::Escape) {
-                        running = false;
+                    switch (windowEvent.key.code) {
+                        case sf::Keyboard::Escape:
+                            running = false;
+                            break;
+                        case sf::Keyboard::Right:
+                            printf("Right\n");
+                            moveSquare(1.0, 0.0);
+                            break;
+                        case sf::Keyboard::Left:
+                            printf("Left\n");
+                            moveSquare(-1.0, 0.0);
+                            break;
+                        case sf::Keyboard::Up:
+                            printf("Up\n");
+                            moveSquare(0.0, 1.0);
+                            break;
+                        case sf::Keyboard::Down:
+                            printf("Down\n");
+                            moveSquare(0.0, -1.0);
+                            break;
                     }
                     break;
                 default:
