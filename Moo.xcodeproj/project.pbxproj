@@ -53,6 +53,8 @@
 		3CA1E4C21F428E8D00B338EB /* ResourcePath.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
 		3CA1E4C41F428E8D00B338EB /* ResourcePath.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
 		3CA1E4C51F428E8D00B338EB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3CE34B7F1F4E97EA00EB0EAB /* helpers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = helpers.hpp; sourceTree = "<group>"; };
+		3CE34B811F4E9AB200EB0EAB /* moo_includes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = moo_includes.h; sourceTree = "<group>"; };
 		3CEAF3081F468E0A0004CC7E /* color.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = color.frag; sourceTree = "<group>"; };
 		3CEAF3091F468E0A0004CC7E /* minimalTex.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = minimalTex.vert; sourceTree = "<group>"; };
 		3CEAF30A1F468E0A0004CC7E /* water.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = water.jpg; sourceTree = "<group>"; };
@@ -112,6 +114,8 @@
 				3CA1E4C51F428E8D00B338EB /* main.cpp */,
 				3CA1E4C71F428E8D00B338EB /* Resources */,
 				3CA1E4C01F428E8D00B338EB /* Supporting Files */,
+				3CE34B7F1F4E97EA00EB0EAB /* helpers.hpp */,
+				3CE34B811F4E9AB200EB0EAB /* moo_includes.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -339,6 +343,7 @@
 					/usr/local/Cellar/glew/2.1.0/include,
 					/usr/local/Cellar/freeglut/3.0.0/include,
 					/opt/local/include,
+					/Users/ian/Downloads/glm2,
 				);
 				INFOPLIST_FILE = "src/MyProject-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks /usr/local/Cellar/glew/2.1.0/lib /opt/local/lib /usr/local/Cellar/freeglut/3.0.0/lib";
@@ -371,6 +376,7 @@
 					/usr/local/Cellar/glew/2.1.0/include,
 					/usr/local/Cellar/freeglut/3.0.0/include,
 					/opt/local/include,
+					/Users/ian/Downloads/glm2,
 				);
 				INFOPLIST_FILE = "src/MyProject-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks /usr/local/Cellar/glew/2.1.0/lib /opt/local/lib /usr/local/Cellar/freeglut/3.0.0/lib";

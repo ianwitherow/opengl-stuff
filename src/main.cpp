@@ -1,5 +1,10 @@
+//#include "moo_includes.h"
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -8,196 +13,40 @@
 #include <GLUT/GLUT.h>
 #include <OpenGL/gl.h>
 
-#include <iostream>
-#include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <string>
 #include <math.h>
 
+#include "helpers.hpp"
+
+
 using namespace std;
 
-GLuint squareShaderProgram;
-GLuint triangleShaderProgram;
-GLuint squareVao;
-GLuint triangleVao;
-
-GLuint squareBuffer;
-GLuint triangleBuffer;
-
-GLfloat vertices[] = {
-    -0.5f, 0.5f, 0.0f, 0.0f,   // Top-left
-    0.5f, 0.5f, 1.0f, 0.0f,    // Top-right
-    0.5f, -0.5f, 1.0f, 1.0f,   // Bottom-right
-    -0.5f, -0.5f, 0.0f, 1.0f,  // Bottom-left
+GLfloat vertices[] {
+    1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f
 };
 
 
-GLfloat triangleVertices[] = {
-    0.0f,  0.5f, 1.0f, 0.0f, 0.0f, // Vertex 1 (X, Y)
-    0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // Vertex 2 (X, Y)
-    -0.5f, -0.5f, 0.0f, 0.0f, 1.0f
-};
-
-GLint elements[] = {
-    0, 1, 2,
-    2, 3, 0
-};
-
-
-char* loadFile(const char *fname) {
-    ifstream::pos_type size;
-    char * memblock;
-
-    ifstream file(fname, ios::in | ios::binary | ios::ate);
-    if (file.is_open()) {
-        size = file.tellg();
-        memblock = new char[(int)size + 1];
-        file.seekg(0, ios::beg);
-        file.read(memblock, size);
-        file.close();
-        memblock[size] = '\0';
-        cout << "file " << fname << " loaded" << endl;
-    } else {
-        cout << "Unable to open file " << fname << endl;
-        exit(1);
-    }
-    return memblock;
-}
 
 void init() {
+    // Get those vertices up in they
 
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
-}
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
 
-void printShaderCompileResult(GLuint shader, const char* shaderName) {
-    GLint status;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-    if (status == GL_TRUE) {
-        printf("%s shader loaded!\n", shaderName);
-    } else {
-        printf("%s shader failed to load!\n", shaderName);
-        char buffer[512];
-        glGetShaderInfoLog(shader, 512, NULL, buffer);
-        printf("%s", buffer);
-    }
-
-}
-
-void initShaders(const char* vertFilename, const char* fragFilename, GLuint &shaderProgram) {
-
-    const char* vertexSource = loadFile(vertFilename);
-    const char* fragmentSource = loadFile(fragFilename);
-
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexSource, NULL);
-    glCompileShader(vertexShader);
-    printShaderCompileResult(vertexShader, "Vertex");
-
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
-    glCompileShader(fragmentShader);
-    printShaderCompileResult(fragmentShader, "Fragment");
-
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-
-    // Not necessary since 0 is the default, but doing it anyway.
-    glBindFragDataLocation(shaderProgram, 0, "outColor");
-
-    glLinkProgram(shaderProgram);
-
-}
-
-void setupSquareShape() {
-    // Create a Vertex Array Object to store the shader program's attribute linking information
-	glGenVertexArrays(1, &squareVao);
-    glBindVertexArray(squareVao);
-
-    // Create a buffer, store its id in 'vbo'
-    glGenBuffers(1, &squareBuffer);
-
-    // Set that buffer to the 'active' buffer
-	glBindBuffer(GL_ARRAY_BUFFER, squareBuffer);
-
-    // Write our vertices to the active buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    GLuint ebo;
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-
-    GLint posAttrib = glGetAttribLocation(squareShaderProgram, "position");
-    // 2, because we're sending x and y for each vertex
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
-
-    GLint texAttrib = glGetAttribLocation(squareShaderProgram, "texcoord");
-    glEnableVertexAttribArray(texAttrib);
-    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void*)(2*sizeof(float)));
-
-    GLuint texture;
-    glGenTextures(1, &texture);
-
-    sf::Image image;
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    image.loadFromFile("water.jpg");
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-    glUniform1i(glGetUniformLocation(squareShaderProgram, "waterTexture"), 0);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-}
-
-
-void setupTriangleShape() {
-    printf("Shader program: %i\n", triangleShaderProgram);
     
-	// Load triangle data
-	glGenVertexArrays(1, &triangleVao);
-    glBindVertexArray(triangleVao);
-
-    glGenBuffers(1, &triangleBuffer);
-
-	glBindBuffer(GL_ARRAY_BUFFER, triangleBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
-
-
-    GLint posAttrib = glGetAttribLocation(triangleShaderProgram, "position");
-    // 2, because we're sending x and y for each vertex
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
-
-
-    GLint colorAttrib = glGetAttribLocation(triangleShaderProgram, "color");
-    glEnableVertexAttribArray(colorAttrib);
-    glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
-}
-
-void moveSquare(float x, float y) {
-    printf("x: %f\n", x);
-    x = x * 0.1;
-    y = y * 0.1;
-    
-    printf("x now: %f\n", x);
-
-    for (int i = 0; i < sizeof(vertices) / sizeof(vertices[0]); i += 4) {
-        // Update x
-        printf("%f => %f\n", vertices[i], vertices[i] + x);
-        vertices[i] = vertices[i] + x;
-        // Update y
-        vertices[i + 1] = vertices[i + 1] + y;
-    }
-    
-    glBindBuffer(GL_ARRAY_BUFFER, squareBuffer);
-    
-    // Update the vertices in our squareBuffer
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 }
 
 void renderBg() {
@@ -205,26 +54,8 @@ void renderBg() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-
-void renderSquare() {
-	//use square shader program
-	glUseProgram(squareShaderProgram);
-    glBindVertexArray(squareVao);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-}
-
-void renderTriangle() {
-	glUseProgram(triangleShaderProgram);
-    glBindVertexArray(triangleVao);
+void render() {
     glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-
-void reshape(int w, int h)
-{
-    // keep aspect ratio
-    h = w / 1.333333;
-    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 }
 
 int main(int argc, char *argv[]) {
@@ -244,26 +75,30 @@ int main(int argc, char *argv[]) {
 
     glewExperimental = GL_TRUE;
     glewInit();
-
+    
     init();
 
-    initShaders("minimalTex.vert", "water.frag", squareShaderProgram);
-	setupSquareShape();
+    GLuint shaderProgram;
+    initShaders("minimal.vert", "color.frag", shaderProgram);
 
-	initShaders("minimal.vert", "color.frag", triangleShaderProgram);
-	setupTriangleShape();
+    glUseProgram(shaderProgram);
     
-    GLint e = glGetError();
-    printf("%i\n", e);
-
-
-
-    auto start = std::chrono::high_resolution_clock::now();
-    GLuint sqTimeUniform = glGetUniformLocation(squareShaderProgram, "time");
-    GLuint triTimeUniform = glGetUniformLocation(triangleShaderProgram, "time");
-
+    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+    glEnableVertexAttribArray(posAttrib);
+    __glewVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), 0);
+    
+    GLint colorAttrib = glGetAttribLocation(shaderProgram, "color");
+    glEnableVertexAttribArray(colorAttrib);
+    __glewVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(2*sizeof(float)));
 
     bool running = true;
+
+    GLint e = glGetError();
+
+    printf("%i\r", e);
+
+    GLint uniTrans = glGetUniformLocation(shaderProgram, "trans");
+    auto t_start = chrono::high_resolution_clock::now();
 
     while (running) {
         sf::Event windowEvent;
@@ -279,19 +114,17 @@ int main(int argc, char *argv[]) {
                             break;
                         case sf::Keyboard::Right:
                             printf("Right\n");
-                            moveSquare(1.0, 0.0);
                             break;
                         case sf::Keyboard::Left:
                             printf("Left\n");
-                            moveSquare(-1.0, 0.0);
                             break;
                         case sf::Keyboard::Up:
                             printf("Up\n");
-                            moveSquare(0.0, 1.0);
                             break;
                         case sf::Keyboard::Down:
                             printf("Down\n");
-                            moveSquare(0.0, -1.0);
+                            break;
+                        default:
                             break;
                     }
                     break;
@@ -299,18 +132,20 @@ int main(int argc, char *argv[]) {
                     break;
             }
         }
-        auto now = std::chrono::high_resolution_clock::now();
-        float time = std::chrono::duration_cast<std::chrono::duration<float>>(now - start).count();
+
+        auto t_now = chrono::high_resolution_clock::now();
+        float time = chrono::duration_cast<chrono::duration<float>>(t_now - t_start).count();
+
         
-		glUseProgram(squareShaderProgram);
-        glUniform1f(sqTimeUniform, (sin(time * 4.0f) + 1.0f) / 2.0f);
-		glUseProgram(triangleShaderProgram);
-        glUniform1f(triTimeUniform, (sin(time * 4.0f) + 1.0f) / 2.0f);
+        glm::mat4 trans;
+        trans = glm::rotate(trans, time * glm::radians(-180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(trans));
+
         
         // Draw objects
         renderBg();
-        renderSquare();
-        renderTriangle();
+        render();
 
         // Switch to the front buffer
         window.display();
