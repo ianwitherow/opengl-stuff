@@ -22,6 +22,7 @@
 		3CEAF30B1F468E0A0004CC7E /* color.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3CEAF3081F468E0A0004CC7E /* color.frag */; };
 		3CEAF30C1F468E0A0004CC7E /* minimalTex.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3CEAF3091F468E0A0004CC7E /* minimalTex.vert */; };
 		3CEAF30D1F468E0A0004CC7E /* water.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3CEAF30A1F468E0A0004CC7E /* water.jpg */; };
+		3CF3EE4F1F552DDF00075504 /* normalTexture.frag in Sources */ = {isa = PBXBuildFile; fileRef = 3CF3EE4E1F552DDF00075504 /* normalTexture.frag */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -58,6 +59,7 @@
 		3CEAF3081F468E0A0004CC7E /* color.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = color.frag; sourceTree = "<group>"; };
 		3CEAF3091F468E0A0004CC7E /* minimalTex.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = minimalTex.vert; sourceTree = "<group>"; };
 		3CEAF30A1F468E0A0004CC7E /* water.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = water.jpg; sourceTree = "<group>"; };
+		3CF3EE4E1F552DDF00075504 /* normalTexture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = normalTexture.frag; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +141,7 @@
 				3C103D421F43F84E00935C61 /* grass.png */,
 				3C94D7CD1F42A01600F211FC /* minimal.vert */,
 				3C94D7CF1F42A04300F211FC /* minimal.frag */,
+				3CF3EE4E1F552DDF00075504 /* normalTexture.frag */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -237,6 +240,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3CA1E4C61F428E8D00B338EB /* main.cpp in Sources */,
+				3CF3EE4F1F552DDF00075504 /* normalTexture.frag in Sources */,
 				3CA1E4C31F428E8D00B338EB /* ResourcePath.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
