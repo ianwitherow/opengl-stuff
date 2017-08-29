@@ -3,7 +3,6 @@
 in vec3 Color;
 out vec4 outColor;
 
-uniform float time;
 
 void main()
 {
