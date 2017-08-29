@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{06A0856D-72A6-4D4F-83B6-811A7EB349D2}</ProjectGuid>
+    <RootNamespace>Moo</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="src\color.frag" />
+    <None Include="src\minimal.frag" />
+    <None Include="src\minimal.vert" />
+    <None Include="src\minimalTex.vert" />
+    <None Include="src\normalTexture.frag" />
+    <None Include="src\water.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\helpers.hpp" />
+    <ClInclude Include="src\moo_includes.h" />
+    <ClInclude Include="src\ResourcePath.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Screenshot.png" />
+    <Image Include="src\dirt.jpg" />
+    <Image Include="src\grass.png" />
+    <Image Include="src\water.jpg" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\freeglut.redist.2.8.1.15\build\native\freeglut.redist.targets" Condition="Exists('..\packages\freeglut.redist.2.8.1.15\build\native\freeglut.redist.targets')" />
+    <Import Project="..\packages\freeglut.2.8.1.15\build\native\freeglut.targets" Condition="Exists('..\packages\freeglut.2.8.1.15\build\native\freeglut.targets')" />
+    <Import Project="..\packages\glew.redist.1.9.0.1\build\native\glew.redist.targets" Condition="Exists('..\packages\glew.redist.1.9.0.1\build\native\glew.redist.targets')" />
+    <Import Project="..\packages\glew.1.9.0.1\build\native\glew.targets" Condition="Exists('..\packages\glew.1.9.0.1\build\native\glew.targets')" />
+    <Import Project="..\packages\glm.0.9.8.4\build\native\glm.targets" Condition="Exists('..\packages\glm.0.9.8.4\build\native\glm.targets')" />
+    <Import Project="..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets" Condition="Exists('..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" />
+    <Import Project="..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets" Condition="Exists('..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" />
+    <Import Project="..\packages\sfml-system.redist.2.4.0.0\build\native\sfml-system.redist.targets" Condition="Exists('..\packages\sfml-system.redist.2.4.0.0\build\native\sfml-system.redist.targets')" />
+    <Import Project="..\packages\sfml-system.2.4.0.0\build\native\sfml-system.targets" Condition="Exists('..\packages\sfml-system.2.4.0.0\build\native\sfml-system.targets')" />
+    <Import Project="..\packages\sfml-window.redist.2.4.0.0\build\native\sfml-window.redist.targets" Condition="Exists('..\packages\sfml-window.redist.2.4.0.0\build\native\sfml-window.redist.targets')" />
+    <Import Project="..\packages\sfml-window.2.4.0.0\build\native\sfml-window.targets" Condition="Exists('..\packages\sfml-window.2.4.0.0\build\native\sfml-window.targets')" />
+    <Import Project="..\packages\sfml-graphics.redist.2.4.0.0\build\native\sfml-graphics.redist.targets" Condition="Exists('..\packages\sfml-graphics.redist.2.4.0.0\build\native\sfml-graphics.redist.targets')" />
+    <Import Project="..\packages\sfml-graphics.2.4.0.0\build\native\sfml-graphics.targets" Condition="Exists('..\packages\sfml-graphics.2.4.0.0\build\native\sfml-graphics.targets')" />
+    <Import Project="..\packages\sfml-audio.redist.2.4.0.0\build\native\sfml-audio.redist.targets" Condition="Exists('..\packages\sfml-audio.redist.2.4.0.0\build\native\sfml-audio.redist.targets')" />
+    <Import Project="..\packages\sfml-audio.2.4.0.0\build\native\sfml-audio.targets" Condition="Exists('..\packages\sfml-audio.2.4.0.0\build\native\sfml-audio.targets')" />
+    <Import Project="packages\glm.0.9.8.4\build\native\glm.targets" Condition="Exists('packages\glm.0.9.8.4\build\native\glm.targets')" />
+    <Import Project="packages\glew.redist.1.9.0.1\build\native\glew.redist.targets" Condition="Exists('packages\glew.redist.1.9.0.1\build\native\glew.redist.targets')" />
+    <Import Project="packages\glew.1.9.0.1\build\native\glew.targets" Condition="Exists('packages\glew.1.9.0.1\build\native\glew.targets')" />
+    <Import Project="packages\sfml-system.redist.2.4.2.0\build\native\sfml-system.redist.targets" Condition="Exists('packages\sfml-system.redist.2.4.2.0\build\native\sfml-system.redist.targets')" />
+    <Import Project="packages\sfml-system.2.4.2.0\build\native\sfml-system.targets" Condition="Exists('packages\sfml-system.2.4.2.0\build\native\sfml-system.targets')" />
+    <Import Project="packages\sfml-window.redist.2.4.2.0\build\native\sfml-window.redist.targets" Condition="Exists('packages\sfml-window.redist.2.4.2.0\build\native\sfml-window.redist.targets')" />
+    <Import Project="packages\sfml-window.2.4.2.0\build\native\sfml-window.targets" Condition="Exists('packages\sfml-window.2.4.2.0\build\native\sfml-window.targets')" />
+    <Import Project="packages\sfml-graphics.redist.2.4.2.0\build\native\sfml-graphics.redist.targets" Condition="Exists('packages\sfml-graphics.redist.2.4.2.0\build\native\sfml-graphics.redist.targets')" />
+    <Import Project="packages\sfml-graphics.2.4.2.0\build\native\sfml-graphics.targets" Condition="Exists('packages\sfml-graphics.2.4.2.0\build\native\sfml-graphics.targets')" />
+    <Import Project="packages\sfml-audio.redist.2.4.2.0\build\native\sfml-audio.redist.targets" Condition="Exists('packages\sfml-audio.redist.2.4.2.0\build\native\sfml-audio.redist.targets')" />
+    <Import Project="packages\sfml-audio.2.4.2.0\build\native\sfml-audio.targets" Condition="Exists('packages\sfml-audio.2.4.2.0\build\native\sfml-audio.targets')" />
+    <Import Project="packages\freeglut.redist.2.8.1.15\build\native\freeglut.redist.targets" Condition="Exists('packages\freeglut.redist.2.8.1.15\build\native\freeglut.redist.targets')" />
+    <Import Project="packages\freeglut.2.8.1.15\build\native\freeglut.targets" Condition="Exists('packages\freeglut.2.8.1.15\build\native\freeglut.targets')" />
+    <Import Project="packages\glfw.redist.3.2.1\build\native\glfw.redist.targets" Condition="Exists('packages\glfw.redist.3.2.1\build\native\glfw.redist.targets')" />
+    <Import Project="packages\glfw.3.2.1\build\native\glfw.targets" Condition="Exists('packages\glfw.3.2.1\build\native\glfw.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\freeglut.redist.2.8.1.15\build\native\freeglut.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freeglut.redist.2.8.1.15\build\native\freeglut.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\freeglut.2.8.1.15\build\native\freeglut.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freeglut.2.8.1.15\build\native\freeglut.targets'))" />
+    <Error Condition="!Exists('..\packages\glew.redist.1.9.0.1\build\native\glew.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glew.redist.1.9.0.1\build\native\glew.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\glew.1.9.0.1\build\native\glew.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glew.1.9.0.1\build\native\glew.targets'))" />
+    <Error Condition="!Exists('..\packages\glm.0.9.8.4\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glm.0.9.8.4\build\native\glm.targets'))" />
+    <Error Condition="!Exists('..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-system.redist.2.4.0.0\build\native\sfml-system.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-system.redist.2.4.0.0\build\native\sfml-system.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-system.2.4.0.0\build\native\sfml-system.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-system.2.4.0.0\build\native\sfml-system.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-window.redist.2.4.0.0\build\native\sfml-window.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-window.redist.2.4.0.0\build\native\sfml-window.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-window.2.4.0.0\build\native\sfml-window.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-window.2.4.0.0\build\native\sfml-window.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-graphics.redist.2.4.0.0\build\native\sfml-graphics.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-graphics.redist.2.4.0.0\build\native\sfml-graphics.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-graphics.2.4.0.0\build\native\sfml-graphics.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-graphics.2.4.0.0\build\native\sfml-graphics.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-audio.redist.2.4.0.0\build\native\sfml-audio.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-audio.redist.2.4.0.0\build\native\sfml-audio.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\sfml-audio.2.4.0.0\build\native\sfml-audio.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sfml-audio.2.4.0.0\build\native\sfml-audio.targets'))" />
+    <Error Condition="!Exists('packages\glm.0.9.8.4\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\glm.0.9.8.4\build\native\glm.targets'))" />
+    <Error Condition="!Exists('packages\glew.redist.1.9.0.1\build\native\glew.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\glew.redist.1.9.0.1\build\native\glew.redist.targets'))" />
+    <Error Condition="!Exists('packages\glew.1.9.0.1\build\native\glew.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\glew.1.9.0.1\build\native\glew.targets'))" />
+    <Error Condition="!Exists('packages\sfml-system.redist.2.4.2.0\build\native\sfml-system.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sfml-system.redist.2.4.2.0\build\native\sfml-system.redist.targets'))" />
+    <Error Condition="!Exists('packages\sfml-system.2.4.2.0\build\native\sfml-system.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sfml-system.2.4.2.0\build\native\sfml-system.targets'))" />
+    <Error Condition="!Exists('packages\sfml-window.redist.2.4.2.0\build\native\sfml-window.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sfml-window.redist.2.4.2.0\build\native\sfml-window.redist.targets'))" />
+    <Error Condition="!Exists('packages\sfml-window.2.4.2.0\build\native\sfml-window.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sfml-window.2.4.2.0\build\native\sfml-window.targets'))" />
+    <Error Condition="!Exists('packages\sfml-graphics.redist.2.4.2.0\build\native\sfml-graphics.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sfml-graphics.redist.2.4.2.0\build\native\sfml-graphics.redist.targets'))" />
+    <Error Condition="!Exists('packages\sfml-graphics.2.4.2.0\build\native\sfml-graphics.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sfml-graphics.2.4.2.0\build\native\sfml-graphics.targets'))" />
+    <Error Condition="!Exists('packages\sfml-audio.redist.2.4.2.0\build\native\sfml-audio.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sfml-audio.redist.2.4.2.0\build\native\sfml-audio.redist.targets'))" />
+    <Error Condition="!Exists('packages\sfml-audio.2.4.2.0\build\native\sfml-audio.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sfml-audio.2.4.2.0\build\native\sfml-audio.targets'))" />
+    <Error Condition="!Exists('packages\freeglut.redist.2.8.1.15\build\native\freeglut.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\freeglut.redist.2.8.1.15\build\native\freeglut.redist.targets'))" />
+    <Error Condition="!Exists('packages\freeglut.2.8.1.15\build\native\freeglut.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\freeglut.2.8.1.15\build\native\freeglut.targets'))" />
+    <Error Condition="!Exists('packages\glfw.redist.3.2.1\build\native\glfw.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\glfw.redist.3.2.1\build\native\glfw.redist.targets'))" />
+    <Error Condition="!Exists('packages\glfw.3.2.1\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\glfw.3.2.1\build\native\glfw.targets'))" />
+  </Target>
+</Project>
