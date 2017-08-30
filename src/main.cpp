@@ -168,7 +168,9 @@ GLuint cubeVao;
 GLuint skyboxVao;
 GLuint skyboxTexId;
 GLuint cubeTexId;
+GLuint waterTexId;
 Shader cubeShader;
+Shader waterShader;
 Shader skyboxShader;
 
 void init() {
@@ -194,6 +196,19 @@ void init() {
     GLint texAttrib = glGetAttribLocation(cubeShader.ID, "texcoord");
     __glewVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
     glEnableVertexAttribArray(texAttrib);
+
+    GLint waterPosAttrib = glGetAttribLocation(waterShader.ID, "position");
+    glEnableVertexAttribArray(waterPosAttrib);
+    __glewVertexAttribPointer(waterPosAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
+
+    GLint waterColorAttrib = glGetAttribLocation(waterShader.ID, "color");
+    glEnableVertexAttribArray(waterColorAttrib);
+    __glewVertexAttribPointer(waterColorAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
+
+    GLint waterTexAttrib = glGetAttribLocation(waterShader.ID, "texcoord");
+    __glewVertexAttribPointer(waterTexAttrib, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
+    glEnableVertexAttribArray(waterTexAttrib);
+
 
     // Skybox
     glGenVertexArrays(1, &skyboxVao);
@@ -255,6 +270,32 @@ void render() {
 		}
 	}
 
+
+	waterShader.use();
+
+
+	waterShader.setMat4("model", model);
+	waterShader.setMat4("view", view);
+	waterShader.setMat4("proj", proj);
+
+	float time = (sin((float)glfwGetTime() * 4.0f) + 1.0f) / 2.0f;
+	waterShader.setFloat("time", time);
+
+	glBindTexture(GL_TEXTURE_2D, waterTexId);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// draw water blocks
+	for (int x = 0; x < 100; x+=10) {
+		float myX = (float)x / (float)10;
+		for (int z = 0; z < 1000; z += 10) {
+			float myZ = (float)z / (float)10;
+
+			glm::mat4 mdl = glm::translate(glm::mat4(1.f), glm::vec3(-myX -1, 0.f, myZ));
+			waterShader.setMat4("model", mdl);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+	}
 
 
     glBindVertexArray(0);
@@ -322,13 +363,14 @@ int main(int argc, char *argv[]) {
     // OSX
 
 	cubeShader = Shader("src/minimalTex.vert", "src/normalTexture.frag");
+	waterShader = Shader("src/minimalTex.vert", "src/water.frag");
 
     skyboxShader = Shader("src/skybox.vert", "src/skybox.frag");
 
     // Load vertices and setup attributes
     init();
 
-    // Configure the cube shaders
+    // Configure the grass texture
     glGenTextures(1, &cubeTexId);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexId);
@@ -346,6 +388,26 @@ int main(int argc, char *argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+	// Water texture
+    glGenTextures(1, &waterTexId);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, waterTexId);
+
+
+    // Windows
+    image.loadFromFile("src/water.jpg");
+    // OSX
+    //image.loadFromFile("DirtGrass.png");
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+	//waterShader.setInt("theTexture", 0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 
     glBindVertexArray(skyboxVao);
 
@@ -378,9 +440,6 @@ int main(int argc, char *argv[]) {
 		processInput(window);
 
 		//printf("%f %f %f\n", cameraFront.x, cameraFront.y, cameraFront.z);
-
-        auto t_now = chrono::high_resolution_clock::now();
-        float time = chrono::duration_cast<chrono::duration<float>>(t_now - t_start).count();
 
         //model = glm::rotate(model, time * glm::radians(-180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
