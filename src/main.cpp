@@ -27,6 +27,7 @@
 #include <chrono>
 
 #include "helpers.hpp"
+#include "Shader.h"
 
 using namespace std;
 
@@ -120,13 +121,13 @@ float skyboxVertices[] = {
     1.0f, -1.0f,  1.0f
 };
 
-string skyboxImages[] = {
-    "skybox_right.png",
-    "skybox_left.png",
-    "skybox_top.png",
-    "skybox_bottom.png",
-    "skybox_back.png",
-    "skybox_front.png"
+vector<string> skyboxImages = {
+    "src/skybox_right.png",
+    "src/skybox_left.png",
+    "src/skybox_top.png",
+    "src/skybox_bottom.png",
+    "src/skybox_back.png",
+    "src/skybox_front.png"
 };
 
 bool paused = false;
@@ -167,8 +168,8 @@ GLuint cubeVao;
 GLuint skyboxVao;
 GLuint skyboxTexId;
 GLuint cubeTexId;
-GLuint cubeShaderProgram;
-GLuint skyboxShaderProgram;
+Shader cubeShader;
+Shader skyboxShader;
 
 void init() {
     // Get those vertices up in they
@@ -182,15 +183,15 @@ void init() {
     glBindBuffer(GL_ARRAY_BUFFER, cubeVbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    GLint cubePosAttrib = glGetAttribLocation(cubeShaderProgram, "position");
+    GLint cubePosAttrib = glGetAttribLocation(cubeShader.ID, "position");
     glEnableVertexAttribArray(cubePosAttrib);
     __glewVertexAttribPointer(cubePosAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
 
-    GLint colorAttrib = glGetAttribLocation(cubeShaderProgram, "color");
+    GLint colorAttrib = glGetAttribLocation(cubeShader.ID, "color");
     glEnableVertexAttribArray(colorAttrib);
     __glewVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
 
-    GLint texAttrib = glGetAttribLocation(cubeShaderProgram, "texcoord");
+    GLint texAttrib = glGetAttribLocation(cubeShader.ID, "texcoord");
     __glewVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
     glEnableVertexAttribArray(texAttrib);
 
@@ -204,15 +205,14 @@ void init() {
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
 
-    GLint skyboxPosAttrib = glGetAttribLocation(skyboxShaderProgram, "position");
+    GLint skyboxPosAttrib = glGetAttribLocation(skyboxShader.ID, "position");
     glEnableVertexAttribArray(skyboxPosAttrib);
     __glewVertexAttribPointer(skyboxPosAttrib, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
 
 }
 
 void renderBg() {
-	//glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -228,42 +228,47 @@ void render() {
     
     glm::mat4 model;
 
-    glUseProgram(cubeShaderProgram);
-    GLint uniModel = glGetUniformLocation(cubeShaderProgram, "model");
-    GLint cubeUniView = glGetUniformLocation(cubeShaderProgram, "view");
-    GLint cubeUniProj = glGetUniformLocation(cubeShaderProgram, "proj");
+	cubeShader.use();
 
 
 
-    glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(cubeUniView, 1, GL_FALSE, glm::value_ptr(view));
-
-    glUniformMatrix4fv(cubeUniProj, 1, GL_FALSE, glm::value_ptr(proj));
+	cubeShader.setMat4("model", model);
+	cubeShader.setMat4("view", view);
+	cubeShader.setMat4("proj", proj);
 
     glDepthMask(GL_TRUE);
-
 
     
     glBindVertexArray(cubeVao);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexId);
 
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+	
+	for (int x = 0; x < 1600; x+=10) {
+		float myX = (float)x / (float)10;
+		for (int z = 0; z < 1000; z += 10) {
+			float myZ = (float)z / (float)10;
+
+			glm::mat4 mdl = glm::translate(glm::mat4(1.f), glm::vec3(myX, 0.f, myZ));
+			cubeShader.setMat4("model", mdl);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+	}
+
+
+
     glBindVertexArray(0);
 
 
 
 
     glDepthFunc(GL_LEQUAL);
-    glUseProgram(skyboxShaderProgram);
-
-    GLint skyboxUniView = glGetUniformLocation(skyboxShaderProgram, "view");
-    GLint skyboxUniProj = glGetUniformLocation(skyboxShaderProgram, "proj");
-    
-    glUniformMatrix4fv(skyboxUniProj, 1, GL_FALSE, glm::value_ptr(proj));
+    skyboxShader.use();
 
     glm::mat4 skyboxView = glm::mat4(glm::mat3(view));
-    glUniformMatrix4fv(skyboxUniView, 1, GL_FALSE, glm::value_ptr(skyboxView));
+
+	skyboxShader.setMat4("proj", proj);
+	skyboxShader.setMat4("view", skyboxView);
 
 
 
@@ -272,7 +277,6 @@ void render() {
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexId);
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    //glDepthMask(GL_FALSE);
     glBindVertexArray(0);
     glDepthFunc(GL_LESS); // set depth function back to default
 
@@ -316,9 +320,10 @@ int main(int argc, char *argv[]) {
     // Windows
     //initShaders("src/minimalTex.vert", "src/normalTexture.frag", cubeShaderProgram);
     // OSX
-    initShaders("minimalTex.vert", "normalTexture.frag", cubeShaderProgram);
 
-    initShaders("skybox.vert", "skybox.frag", skyboxShaderProgram);
+	cubeShader = Shader("src/minimalTex.vert", "src/normalTexture.frag");
+
+    skyboxShader = Shader("src/skybox.vert", "src/skybox.frag");
 
     // Load vertices and setup attributes
     init();
@@ -331,11 +336,11 @@ int main(int argc, char *argv[]) {
     sf::Image image;
 
     // Windows
-    //image.loadFromFile("src/dirt.jpg");
+    image.loadFromFile("src/DirtGrass.png");
     // OSX
-    image.loadFromFile("DirtGrass.png");
+    //image.loadFromFile("DirtGrass.png");
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-    glUniform1i(glGetUniformLocation(cubeShaderProgram, "theTexture"), 0);
+	cubeShader.setInt("theTexture", 0);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -348,7 +353,7 @@ int main(int argc, char *argv[]) {
     glGenTextures(1, &skyboxTexId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexId);
 
-    for (int i = 0; i < sizeof(skyboxImages); i++) {
+    for (int i = 0; i < skyboxImages.size(); i++) {
         image.loadFromFile(skyboxImages[i]);
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
             0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
@@ -361,7 +366,7 @@ int main(int argc, char *argv[]) {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 
-    glUniform1i(glGetUniformLocation(skyboxShaderProgram, "skybox"), 0);
+	skyboxShader.setInt("skybox", 0);
 
     GLint e = glGetError();
 
@@ -398,7 +403,7 @@ void processInput(GLFWwindow *window) {
 		return;
 	}
 
-	bool colemak = false;
+	bool colemak = true;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		cameraPos += cameraSpeed * cameraFront;

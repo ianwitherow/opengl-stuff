@@ -65,6 +65,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -73,17 +74,31 @@
     <None Include="src\minimal.vert" />
     <None Include="src\minimalTex.vert" />
     <None Include="src\normalTexture.frag" />
+    <None Include="src\skybox.frag" />
+    <None Include="src\skybox.vert" />
     <None Include="src\water.frag" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Cube.h" />
     <ClInclude Include="src\helpers.hpp" />
     <ClInclude Include="src\moo_includes.h" />
     <ClInclude Include="src\ResourcePath.hpp" />
+    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Screenshot.png" />
     <Image Include="src\dirt.jpg" />
+    <Image Include="src\DirtGrass.png" />
     <Image Include="src\grass.png" />
+    <Image Include="src\sky.png" />
+    <Image Include="src\skybox_back.png" />
+    <Image Include="src\skybox_bottom.png" />
+    <Image Include="src\skybox_front.png" />
+    <Image Include="src\skybox_left.png" />
+    <Image Include="src\skybox_right.png" />
+    <Image Include="src\skybox_top.png" />
     <Image Include="src\water.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
