@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 
-
 #include <GL/glew.h>
 #include <GL/glut.h>
 
@@ -14,11 +13,9 @@
 #else
 #endif
 
-
 #include <SFML/Graphics.hpp>
 
 #include <GLFW/glfw3.h>
-
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -35,47 +32,101 @@ using namespace std;
 
 GLfloat vertices[] {
     // X      Y     Z     R     G     B     U     V
-    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // Right side
-    0.5f , -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-    0.5f ,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    0.5f ,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.32f , 1.0f     , // Right side
+    0.5f , -0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.0f  , 1.0f     ,
+    0.5f ,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.0f  , 0.0f     ,
+    0.5f ,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.0f  , 0.0f     ,
+    -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.32f , 0.0f     ,
+    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.32f , 1.0f     ,
 
-    -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // Left side
-    0.5f , -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  0.32f , 1.0f     , // Left side
+    0.5f , -0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  0.0f  , 1.0f     ,
+    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  0.0f  , 0.0f     ,
+    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  0.0f  , 0.0f     ,
+    -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  0.32f , 0.0f     ,
+    -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  0.32f , 1.0f     ,
 
-    -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // Back
-    -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  0.0f  ,   0.0f   , // Back
+    -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.32f ,  0.0f    ,
+    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.32f ,  1.0f    ,
+    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.32f ,  1.0f    ,
+    -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  0.0f  ,   1.0f   ,
+    -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  0.0f  ,   0.0f   ,
 
-    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // Front
-    0.5f ,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-    0.5f , -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-    0.5f , -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-    0.5f , -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f   , 0.0f     , // Front
+    0.5f ,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.32f  , 0.0f     ,
+    0.5f , -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.32f  , 1.0f     ,
+    0.5f , -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.32f  , 1.0f     ,
+    0.5f , -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f   , 1.0f     ,
+    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f   , 0.0f     ,
 
-    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // Bottom
-    0.5f , -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-    0.5f , -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    0.5f , -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+	 -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f,    1.0f, //Bottom
+	 0.5f , -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.67f ,  1.0f, 
+	 0.5f , -0.5f, 0.5f , 1.0f, 1.0f, 1.0f, 0.67f ,  0.0f, 
+	 0.5f , -0.5f, 0.5f , 1.0f, 1.0f, 1.0f, 0.67f ,  0.0f, 
+	 -0.5f, -0.5f, 0.5f , 1.0f, 1.0f, 1.0f, 1.0f,    0.0f, 
+	 -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f,    1.0f, 
 
-    -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // Top
-    0.5f ,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
+    -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.66f  ,   1.0f   , // Top
+    0.5f ,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.34f  ,   1.0f   ,
+    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.34f  ,   0.0f   ,
+    0.5f ,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.34f  ,   0.0f   ,
+    -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.66f  ,   0.0f   ,
+    -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.66f  ,   1.0f   
+};
+
+float skyboxVertices[] = {
+    // positions
+    -1.0f,  1.0f, -1.0f,
+    -1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+    1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+
+    1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f,  1.0f,
+    1.0f,  1.0f,  1.0f,
+    1.0f,  1.0f,  1.0f,
+    1.0f,  1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+    1.0f,  1.0f,  1.0f,
+    1.0f,  1.0f,  1.0f,
+    1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+
+    -1.0f,  1.0f, -1.0f,
+    1.0f,  1.0f, -1.0f,
+    1.0f,  1.0f,  1.0f,
+    1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+    1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+    1.0f, -1.0f,  1.0f
+};
+
+string skyboxImages[] = {
+    "skybox_right.png",
+    "skybox_left.png",
+    "skybox_top.png",
+    "skybox_bottom.png",
+    "skybox_back.png",
+    "skybox_front.png"
 };
 
 bool paused = false;
@@ -111,28 +162,120 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void processInput(GLFWwindow *window);
 
+// Rendering
+GLuint cubeVao;
+GLuint skyboxVao;
+GLuint skyboxTexId;
+GLuint cubeTexId;
+GLuint cubeShaderProgram;
+GLuint skyboxShaderProgram;
+
 void init() {
     // Get those vertices up in they
 
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    glGenVertexArrays(1, &cubeVao);
+    glBindVertexArray(cubeVao);
 
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
+    GLuint cubeVbo;
+    glGenBuffers(1, &cubeVbo);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    GLint cubePosAttrib = glGetAttribLocation(cubeShaderProgram, "position");
+    glEnableVertexAttribArray(cubePosAttrib);
+    __glewVertexAttribPointer(cubePosAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
+
+    GLint colorAttrib = glGetAttribLocation(cubeShaderProgram, "color");
+    glEnableVertexAttribArray(colorAttrib);
+    __glewVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
+
+    GLint texAttrib = glGetAttribLocation(cubeShaderProgram, "texcoord");
+    __glewVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
+    glEnableVertexAttribArray(texAttrib);
+
+    // Skybox
+    glGenVertexArrays(1, &skyboxVao);
+    glBindVertexArray(skyboxVao);
+
+    GLuint skyboxVbo;
+    glGenBuffers(1, &skyboxVbo);
+
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+
+    GLint skyboxPosAttrib = glGetAttribLocation(skyboxShaderProgram, "position");
+    glEnableVertexAttribArray(skyboxPosAttrib);
+    __glewVertexAttribPointer(skyboxPosAttrib, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
 
 }
 
 void renderBg() {
-	glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+	//glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void render() {
+
+    glm::mat4 view = glm::lookAt(
+        cameraPos,
+        cameraPos + cameraFront,
+        cameraUp
+    );
+    glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 100.0f);
+    
+    glm::mat4 model;
+
+    glUseProgram(cubeShaderProgram);
+    GLint uniModel = glGetUniformLocation(cubeShaderProgram, "model");
+    GLint cubeUniView = glGetUniformLocation(cubeShaderProgram, "view");
+    GLint cubeUniProj = glGetUniformLocation(cubeShaderProgram, "proj");
+
+
+
+    glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(cubeUniView, 1, GL_FALSE, glm::value_ptr(view));
+
+    glUniformMatrix4fv(cubeUniProj, 1, GL_FALSE, glm::value_ptr(proj));
+
+    glDepthMask(GL_TRUE);
+
+
+    
+    glBindVertexArray(cubeVao);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, cubeTexId);
+
     glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+
+
+
+
+    glDepthFunc(GL_LEQUAL);
+    glUseProgram(skyboxShaderProgram);
+
+    GLint skyboxUniView = glGetUniformLocation(skyboxShaderProgram, "view");
+    GLint skyboxUniProj = glGetUniformLocation(skyboxShaderProgram, "proj");
+    
+    glUniformMatrix4fv(skyboxUniProj, 1, GL_FALSE, glm::value_ptr(proj));
+
+    glm::mat4 skyboxView = glm::mat4(glm::mat3(view));
+    glUniformMatrix4fv(skyboxUniView, 1, GL_FALSE, glm::value_ptr(skyboxView));
+
+
+
+    glBindVertexArray(skyboxVao);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexId);
+
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    //glDepthMask(GL_FALSE);
+    glBindVertexArray(0);
+    glDepthFunc(GL_LESS); // set depth function back to default
+
 }
 
 int main(int argc, char *argv[]) {
@@ -166,59 +309,64 @@ int main(int argc, char *argv[]) {
     glewExperimental = GL_TRUE;
     glewInit();
 
-    init();
     printf("Moo 2!\n");
 
     glEnable(GL_DEPTH_TEST);
 
-    GLuint shaderProgram;
-    initShaders("src/minimalTex.vert", "src/normalTexture.frag", shaderProgram);
+    // Windows
+    //initShaders("src/minimalTex.vert", "src/normalTexture.frag", cubeShaderProgram);
+    // OSX
+    initShaders("minimalTex.vert", "normalTexture.frag", cubeShaderProgram);
 
-    glUseProgram(shaderProgram);
+    initShaders("skybox.vert", "skybox.frag", skyboxShaderProgram);
 
-    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    glEnableVertexAttribArray(posAttrib);
-    __glewVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
+    // Load vertices and setup attributes
+    init();
 
-    GLint colorAttrib = glGetAttribLocation(shaderProgram, "color");
-    glEnableVertexAttribArray(colorAttrib);
-    __glewVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
-
-    GLint texAttrib = glGetAttribLocation(shaderProgram, "texcoord");
-    __glewVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
-    glEnableVertexAttribArray(texAttrib);
-
-    GLuint tex;
-    glGenTextures(1, &tex);
+    // Configure the cube shaders
+    glGenTextures(1, &cubeTexId);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tex);
+    glBindTexture(GL_TEXTURE_2D, cubeTexId);
 
     sf::Image image;
 
-    image.loadFromFile("src/dirt.jpg");
+    // Windows
+    //image.loadFromFile("src/dirt.jpg");
+    // OSX
+    image.loadFromFile("DirtGrass.png");
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-    glUniform1i(glGetUniformLocation(shaderProgram, "theTexture"), 0);
-
+    glUniform1i(glGetUniformLocation(cubeShaderProgram, "theTexture"), 0);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    
+    glBindVertexArray(skyboxVao);
+
+    // Cube map
+    glGenTextures(1, &skyboxTexId);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexId);
+
+    for (int i = 0; i < sizeof(skyboxImages); i++) {
+        image.loadFromFile(skyboxImages[i]);
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+            0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
+    glUniform1i(glGetUniformLocation(skyboxShaderProgram, "skybox"), 0);
 
     GLint e = glGetError();
 
     printf("%i\r", e);
 
-    GLint uniModel = glGetUniformLocation(shaderProgram, "model");
-    GLint uniView = glGetUniformLocation(shaderProgram, "view");
-    GLint uniProj = glGetUniformLocation(shaderProgram, "proj");
-
-    glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 100.0f);
-
-    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
-    
     auto t_start = chrono::high_resolution_clock::now();
 
     while (!glfwWindowShouldClose(window)) {
@@ -229,19 +377,9 @@ int main(int argc, char *argv[]) {
         auto t_now = chrono::high_resolution_clock::now();
         float time = chrono::duration_cast<chrono::duration<float>>(t_now - t_start).count();
 
-        glm::mat4 model;
         //model = glm::rotate(model, time * glm::radians(-180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 
-        glm::mat4 view = glm::lookAt(
-            cameraPos,
-            cameraPos + cameraFront,
-            cameraUp
-        );
-
-        glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
-        
         // Draw objects
         renderBg();
         render();
