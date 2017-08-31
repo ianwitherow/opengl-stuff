@@ -212,7 +212,6 @@ void init() {
     __glewVertexAttribPointer(waterTexAttrib, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
     glEnableVertexAttribArray(waterTexAttrib);
 
-
     // Skybox
     glGenVertexArrays(1, &skyboxVao);
     glBindVertexArray(skyboxVao);
@@ -243,12 +242,10 @@ void render() {
         cameraUp
     );
     glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 1000.0f);
-    
+
     glm::mat4 model;
 
 	cubeShader.use();
-
-
 
 	cubeShader.setMat4("model", model);
 	cubeShader.setMat4("view", view);
@@ -256,12 +253,10 @@ void render() {
 
     glDepthMask(GL_TRUE);
 
-    
     glBindVertexArray(cubeVao);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexId);
 
-	
 	for (int x = 0; x < 1600; x+=10) {
 		float myX = (float)x / (float)10;
 		for (int z = 0; z < 1000; z += 10) {
@@ -273,9 +268,7 @@ void render() {
 		}
 	}
 
-
 	waterShader.use();
-
 
 	waterShader.setMat4("model", model);
 	waterShader.setMat4("view", view);
@@ -300,11 +293,7 @@ void render() {
 		}
 	}
 
-
     glBindVertexArray(0);
-
-
-
 
     glDepthFunc(GL_LEQUAL);
     skyboxShader.use();
@@ -313,8 +302,6 @@ void render() {
 
 	skyboxShader.setMat4("proj", proj);
 	skyboxShader.setMat4("view", skyboxView);
-
-
 
     glBindVertexArray(skyboxVao);
     glActiveTexture(GL_TEXTURE0);
@@ -328,32 +315,38 @@ void render() {
 
 int main(int argc, char *argv[]) {
 
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	#ifdef __APPLE__
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
-	#endif
+    #ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
+    #endif
 
-		GLFWwindow* window = glfwCreateWindow(800, 600, "Moo!", NULL, NULL);
-        glfwSwapInterval(1);
-		if (window == NULL)
-		{
-			std::cout << "Failed to create GLFW window" << std::endl;
-			glfwTerminate();
-			return -1;
-		}
-		glfwMakeContextCurrent(window);
-		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-		glfwSetCursorPosCallback(window, mouse_callback);
-		glfwSetMouseButtonCallback(window, mouse_button_callback);
-		glfwSetScrollCallback(window, scroll_callback);
-		glfwSetKeyCallback(window, key_callback);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Moo!", NULL, NULL);
+    glfwSwapInterval(1);
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback);
 
     // tell GLFW to capture our mouse
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPos(window, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+
+    // Remember initial mouse position so it doesn't get all crazy the first time we move it
+    double mouseX, mouseY;
+    glfwGetCursorPos(window, &mouseX, &mouseY);
+    lastX = (float)mouseX;
+    lastY = (float)mouseY;
 
     glewExperimental = GL_TRUE;
     glewInit();
@@ -393,12 +386,10 @@ int main(int argc, char *argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-
 	// Water texture
     glGenTextures(1, &waterTexId);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, waterTexId);
-
 
     // Windows
     image.loadFromFile("water.jpg");
@@ -412,7 +403,6 @@ int main(int argc, char *argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
 
     glBindVertexArray(skyboxVao);
 
@@ -432,7 +422,6 @@ int main(int argc, char *argv[]) {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-
 	skyboxShader.setInt("skybox", 0);
 
     GLint e = glGetError();
@@ -447,7 +436,6 @@ int main(int argc, char *argv[]) {
 		//printf("%f %f %f\n", cameraFront.x, cameraFront.y, cameraFront.z);
 
         //model = glm::rotate(model, time * glm::radians(-180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
 
         // Draw objects
         renderBg();
@@ -513,9 +501,7 @@ void processInput(GLFWwindow *window) {
             cameraPos.y = 2.5;
         }
     }
-    
 
-    
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -524,7 +510,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	if (paused) { return; }
 
-    
 	if (firstMouse) {
 		lastX = xpos;
 		lastY = ypos;
@@ -576,7 +561,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}
 		printf("Esc");
 	}
-
 
     // Toggle free fly
 	if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
