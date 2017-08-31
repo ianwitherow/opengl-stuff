@@ -242,7 +242,7 @@ void render() {
         cameraPos + cameraFront,
         cameraUp
     );
-    glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 100.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 1000.0f);
     
     glm::mat4 model;
 
@@ -337,6 +337,7 @@ int main(int argc, char *argv[]) {
 	#endif
 
 		GLFWwindow* window = glfwCreateWindow(800, 600, "Moo!", NULL, NULL);
+        glfwSwapInterval(1);
 		if (window == NULL)
 		{
 			std::cout << "Failed to create GLFW window" << std::endl;
@@ -496,9 +497,25 @@ void processInput(GLFWwindow *window) {
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		cameraPos.y += cameraSpeed;
 	}
-	if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)) {
-		cameraPos.y -= cameraSpeed;
-	}
+
+    // Handle shift
+    if (freeFly) {
+        // In free fly, shift goes down
+    	if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)) {
+            cameraPos.y -= cameraSpeed;
+    	}
+    } else {
+        // Normal mode; shift crouches
+    	if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)) {
+            cameraPos.y = 1.5;
+        }
+    	if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)) {
+            cameraPos.y = 2.5;
+        }
+    }
+    
+
+    
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -570,8 +587,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	// Movement. If paused, don't do this stuff.
-	if (paused) { return; }
+    if (key == GLFW_KEY_MINUS) {
+        cameraSpeed -= 0.1f;
+        if (cameraSpeed <= 0.f) {
+            cameraSpeed = 0.1f;
+        }
+    }
+
+    if (key == GLFW_KEY_EQUAL) {
+        cameraSpeed += 0.1f;
+    }
 
 }
 
