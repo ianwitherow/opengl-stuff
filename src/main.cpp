@@ -29,6 +29,10 @@
 #include "helpers.hpp"
 #include "Shader.h"
 
+#include "Camera.h"
+#include "Player.h"
+#include "Game.h"
+
 using namespace std;
 
 GLfloat vertices[] {
@@ -131,29 +135,11 @@ vector<string> skyboxImages = {
 };
 
 // Game state stuff
-bool paused = false;
-bool freeFly = false;
 
-double pausedMouseX;
-double pausedMouseY;
 
-const unsigned int SCR_WIDTH = 1600;
-const unsigned int SCR_HEIGHT = 1200;
 glm::vec4 bgColor = glm::vec4(0.2f, 0.3f, 0.4f, 0.0f);
 
 // Camera
-glm::vec3 cameraPos = glm::vec3(5.0f, 2.5f, 3.f);
-glm::vec3 cameraFront = glm::vec3(-1.f, 0.f, 0.f);
-glm::vec3 cameraUp = glm::vec3(0.f, 1.f, 0.f);
-float cameraSpeed = 0.1f;
-float Yaw = -180.0f;
-float Pitch = 0.0f;
-float mouseSensitivity = 0.1f;
-
-// Mouse stuff
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
-bool firstMouse = false;
 
 // timing
 float deltaTime = 0.0f;
@@ -175,6 +161,8 @@ GLuint waterTexId;
 Shader cubeShader;
 Shader waterShader;
 Shader skyboxShader;
+
+Game game = Game(800, 600);
 
 void init() {
     // Get those vertices up in they
@@ -235,12 +223,8 @@ void renderBg() {
 }
 
 void render() {
+    glm::mat3 view = game.player.camera.getView();
 
-    glm::mat4 view = glm::lookAt(
-        cameraPos,
-        cameraPos + cameraFront,
-        cameraUp
-    );
     glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 1000.0f);
 
     glm::mat4 model;
@@ -315,38 +299,36 @@ void render() {
 
 int main(int argc, char *argv[]) {
 
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
-    #endif
+    // Set up camera. Initial state:
+    glm::vec3 cameraPosition = glm::vec3(5.0f, 2.5f, 3.f);
+    glm::vec3 cameraFront = glm::vec3(-1.f, 0.f, 0.f);
+    glm::vec3 cameraUp = glm::vec3(0.f, 1.f, 0.f);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Moo!", NULL, NULL);
-    glfwSwapInterval(1);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
+    // TODO: camera member values are not being updated when modified using game.player.camera.whatever = whatever
+    Camera camera = Camera(cameraPosition, cameraFront, cameraUp);
 
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
-    glfwSetScrollCallback(window, scroll_callback);
-    glfwSetKeyCallback(window, key_callback);
+    Player player = Player();
+    player.camera = camera;
+    game = Game(800, 600);
+    game.player = player;
+    
+    game.createWindow();
+    
+    glfwSetFramebufferSizeCallback(game.window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(game.window, mouse_callback);
+
+    glfwSetMouseButtonCallback(game.window, mouse_button_callback);
+    glfwSetScrollCallback(game.window, scroll_callback);
+    glfwSetKeyCallback(game.window, key_callback);
 
     // tell GLFW to capture our mouse
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(game.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Remember initial mouse position so it doesn't get all crazy the first time we move it
     double mouseX, mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);
-    lastX = (float)mouseX;
-    lastY = (float)mouseY;
+    glfwGetCursorPos(game.window, &mouseX, &mouseY);
+    game.player.camera.lastX = (float)mouseX;
+    game.player.camera.lastY = (float)mouseY;
 
     glewExperimental = GL_TRUE;
     glewInit();
@@ -430,8 +412,8 @@ int main(int argc, char *argv[]) {
 
     auto t_start = chrono::high_resolution_clock::now();
 
-    while (!glfwWindowShouldClose(window)) {
-		processInput(window);
+    while (!glfwWindowShouldClose(game.window)) {
+		processInput(game.window);
 
 		//printf("%f %f %f\n", cameraFront.x, cameraFront.y, cameraFront.z);
 
@@ -442,7 +424,7 @@ int main(int argc, char *argv[]) {
         render();
 
         // Switch to the front buffer
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(game.window);
 		glfwPollEvents();
 
     }
@@ -451,54 +433,52 @@ int main(int argc, char *argv[]) {
 }
 
 void processInput(GLFWwindow *window) {
-	if (paused) {
+	if (game.paused) {
+        printf("Paused\n");
 		return;
 	}
 
 	bool colemak = false;
 
+    // TODO: Move stuff to camera or game.player class
     // Forward
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        if (!freeFly) {
-            // If not in freefly, don't allow moving up or down
-            cameraPos += cameraSpeed * glm::vec3(cameraFront.x, 0.f, cameraFront.z);
-        } else {
-            cameraPos += cameraSpeed * cameraFront;
-        }
+        game.player.camera.moveForward(game.freeFly);
+        printf("W!\n");
 	}
 
     // Back
 	if ((colemak && glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) || (!colemak && glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)) {
-        if (!freeFly) {
+        if (!game.freeFly) {
             // If not in freefly, don't allow moving up or down
-            cameraPos -= cameraSpeed * glm::vec3(cameraFront.x, 0.f, cameraFront.z);
+            game.player.camera.position -= game.player.camera.speed * glm::vec3(game.player.camera.front.x, 0.f, game.player.camera.front.z);
         } else {
-            cameraPos -= cameraSpeed * cameraFront;
+            game.player.camera.position -= game.player.camera.speed * game.player.camera.front;
         }
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		game.player.camera.position -= glm::normalize(glm::cross(game.player.camera.front, game.player.camera.up)) * game.player.camera.speed;
 	}
 	if ((colemak && glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) || (!colemak && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)) {
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		game.player.camera.position += glm::normalize(glm::cross(game.player.camera.front, game.player.camera.up)) * game.player.camera.speed;
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		cameraPos.y += cameraSpeed;
+		game.player.camera.position.y += game.player.camera.speed;
 	}
 
     // Handle shift
-    if (freeFly) {
+    if (game.freeFly) {
         // In free fly, shift goes down
     	if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)) {
-            cameraPos.y -= cameraSpeed;
+            game.player.camera.position.y -= game.player.camera.speed;
     	}
     } else {
         // Normal mode; shift crouches
     	if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)) {
-            cameraPos.y = 1.5;
+            game.player.camera.position.y = 1.5;
         }
     	if ((glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)) {
-            cameraPos.y = 2.5;
+            game.player.camera.position.y = 2.5;
         }
     }
 
@@ -508,32 +488,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	if (paused) { return; }
+	if (game.paused) { return; }
 
-	if (firstMouse) {
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = ypos - lastY;
-
-	lastX = xpos;
-	lastY = ypos;
-
-	xoffset *= mouseSensitivity;
-	yoffset *= mouseSensitivity;
-	yoffset = -yoffset;
-
-	Yaw += xoffset;
-	Pitch += yoffset;
-
-	cameraFront = glm::normalize(glm::vec3(
-		cos(glm::radians(Yaw)) * cos(glm::radians(Pitch)),
-		sin(glm::radians(Pitch)),
-		sin(glm::radians(Yaw)) * cos(glm::radians(Pitch))
-	));
+    game.player.camera.handleMouseMove(xpos, ypos);
 
 }
 
@@ -544,27 +501,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     printf("%i\n", key);
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		paused = !paused;
-		if (paused) {
-			printf("Paused\n");
-			// Save mouse pos
-			glfwGetCursorPos(window, &pausedMouseX, &pausedMouseY);
-
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		if (game.paused) {
+            game.resume();
 		}
 		else {
-			printf("Un-paused\n");
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			glfwSetCursorPos(window, pausedMouseX, pausedMouseY);
-			lastX = (float)pausedMouseX;
-			lastY = (float)pausedMouseY;
+            game.pause();
 		}
 		printf("Esc");
 	}
 
     // Toggle free fly
 	if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
-        freeFly = !freeFly;
+        game.freeFly = !game.freeFly;
     }
 
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
@@ -572,14 +520,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 
     if (key == GLFW_KEY_MINUS) {
-        cameraSpeed -= 0.1f;
-        if (cameraSpeed <= 0.f) {
-            cameraSpeed = 0.1f;
+        game.player.camera.speed -= 0.1f;
+        if (game.player.camera.speed <= 0.f) {
+            game.player.camera.speed = 0.1f;
         }
     }
 
     if (key == GLFW_KEY_EQUAL) {
-        cameraSpeed += 0.1f;
+        game.player.camera.speed += 0.1f;
     }
 
 }
