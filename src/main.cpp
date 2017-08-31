@@ -122,24 +122,27 @@ float skyboxVertices[] = {
 };
 
 vector<string> skyboxImages = {
-    "src/skybox_right.png",
-    "src/skybox_left.png",
-    "src/skybox_top.png",
-    "src/skybox_bottom.png",
-    "src/skybox_back.png",
-    "src/skybox_front.png"
+    "skybox_right.png",
+    "skybox_left.png",
+    "skybox_top.png",
+    "skybox_bottom.png",
+    "skybox_back.png",
+    "skybox_front.png"
 };
 
+// Game state stuff
 bool paused = false;
+bool freeFly = false;
+
 double pausedMouseX;
 double pausedMouseY;
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1600;
+const unsigned int SCR_HEIGHT = 1200;
 glm::vec4 bgColor = glm::vec4(0.2f, 0.3f, 0.4f, 0.0f);
 
 // Camera
-glm::vec3 cameraPos = glm::vec3(5.0f, 0.f, 0.f);
+glm::vec3 cameraPos = glm::vec3(5.0f, 2.5f, 3.f);
 glm::vec3 cameraFront = glm::vec3(-1.f, 0.f, 0.f);
 glm::vec3 cameraUp = glm::vec3(0.f, 1.f, 0.f);
 float cameraSpeed = 0.1f;
@@ -359,13 +362,13 @@ int main(int argc, char *argv[]) {
     glEnable(GL_DEPTH_TEST);
 
     // Windows
-    //initShaders("src/minimalTex.vert", "src/normalTexture.frag", cubeShaderProgram);
+    //initShaders("minimalTex.vert", "normalTexture.frag", cubeShaderProgram);
     // OSX
 
-	cubeShader = Shader("src/minimalTex.vert", "src/normalTexture.frag");
-	waterShader = Shader("src/minimalTex.vert", "src/water.frag");
+	cubeShader = Shader("minimalTex.vert", "normalTexture.frag");
+	waterShader = Shader("minimalTex.vert", "water.frag");
 
-    skyboxShader = Shader("src/skybox.vert", "src/skybox.frag");
+    skyboxShader = Shader("skybox.vert", "skybox.frag");
 
     // Load vertices and setup attributes
     init();
@@ -378,7 +381,7 @@ int main(int argc, char *argv[]) {
     sf::Image image;
 
     // Windows
-    image.loadFromFile("src/DirtGrass.png");
+    image.loadFromFile("DirtGrass.png");
     // OSX
     //image.loadFromFile("DirtGrass.png");
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
@@ -397,7 +400,8 @@ int main(int argc, char *argv[]) {
 
 
     // Windows
-    image.loadFromFile("src/water.jpg");
+    image.loadFromFile("water.jpg");
+
     // OSX
     //image.loadFromFile("DirtGrass.png");
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
@@ -462,18 +466,31 @@ void processInput(GLFWwindow *window) {
 		return;
 	}
 
-	bool colemak = true;
+	bool colemak = false;
 
+    // Forward
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		cameraPos += cameraSpeed * cameraFront;
+        if (!freeFly) {
+            // If not in freefly, don't allow moving up or down
+            cameraPos += cameraSpeed * glm::vec3(cameraFront.x, 0.f, cameraFront.z);
+        } else {
+            cameraPos += cameraSpeed * cameraFront;
+        }
 	}
-	if ((colemak && glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS || !colemak && glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)) {
-		cameraPos -= cameraSpeed * cameraFront;
+
+    // Back
+	if ((colemak && glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) || (!colemak && glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)) {
+        if (!freeFly) {
+            // If not in freefly, don't allow moving up or down
+            cameraPos -= cameraSpeed * glm::vec3(cameraFront.x, 0.f, cameraFront.z);
+        } else {
+            cameraPos -= cameraSpeed * cameraFront;
+        }
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	}
-	if ((colemak && glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || !colemak && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)) {
+	if ((colemak && glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) || (!colemak && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)) {
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
@@ -490,6 +507,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	if (paused) { return; }
 
+    
 	if (firstMouse) {
 		lastX = xpos;
 		lastY = ypos;
@@ -521,6 +539,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    printf("%i\n", key);
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		paused = !paused;
@@ -540,6 +559,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}
 		printf("Esc");
 	}
+
+
+    // Toggle free fly
+	if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
+        freeFly = !freeFly;
+    }
 
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
