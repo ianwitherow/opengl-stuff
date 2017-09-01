@@ -10,12 +10,13 @@ public:
 	GLuint textureId;
 
 	Skybox() {
-		shader = Shader(ResourceFile("skybox.vert").c_str(), ResourceFile("skybox.frag").c_str());
+
 
 
 	}
 
 	void init(vector<string> faceImages) {
+		shader = Shader(ResourceFile("skybox.vert").c_str(), ResourceFile("skybox.frag").c_str());
 
 		float vertices[] = {
 			// positions
