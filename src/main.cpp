@@ -74,6 +74,10 @@ Skybox skybox = Skybox();
 
 Game game = Game(800, 600);
 
+// Initialize static vao members
+GLuint Cube::vao;
+GLuint Skybox::vao;
+
 void init() {
     // Get those vertices up in they
 
@@ -194,9 +198,12 @@ int main(int argc, char *argv[]) {
     init();
 
     // Configure the grass texture
+    Cube::bindVao();
     glGenTextures(1, &cubeTexId);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexId);
+    
+    printf("cubeTexId: %i\n", cubeTexId);
 
     sf::Image image;
 
