@@ -10,6 +10,8 @@ public:
 
     GLFWwindow* window;
     
+	World world;
+
     double pausedMouseX;
     double pausedMouseY;
     
@@ -18,7 +20,7 @@ public:
     
     Game(unsigned int screenWidth, unsigned int screenHeight)
         : screenWidth(screenWidth), screenHeight(screenHeight) {
-        
+		world = World();
     }
 
     int createWindow() {
@@ -62,5 +64,9 @@ public:
         player.camera.lastY = (float)pausedMouseY;
         
     }
+
+	void tick() {
+
+	}
     
 };

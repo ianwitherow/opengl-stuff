@@ -3,11 +3,17 @@ class Cube
 public:
     glm::vec3 position;
     Shader* shader;
+	GLuint textureId;
     static GLuint vao;
+	bool markedForGreatness;
     
+	Cube() {
+		markedForGreatness = false;
+	}
     
-    Cube(glm::vec3 position, Shader &shader)
-    : position(position), shader(&shader) {
+    Cube(glm::vec3 position, Shader &shader, GLuint textureId)
+    : position(position), shader(&shader), textureId(textureId) {
+		markedForGreatness = false;
     }
     
     static void Init() {
@@ -93,7 +99,11 @@ public:
         glBindVertexArray(vao);
     }
 
-    void Render(GLuint textureId) {
+    void Render() {
+		if (markedForGreatness) {
+			printf("Marked for greatness!\n");
+		}
+		//shader->use();
         glBindVertexArray(vao);
 
         glActiveTexture(GL_TEXTURE0);

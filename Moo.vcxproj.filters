@@ -86,11 +86,11 @@
     <ClInclude Include="src\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\dirt.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="src\grass.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -122,6 +122,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="src\skybox_top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Dirt.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -31,9 +31,10 @@
 
 #include "Camera.h"
 #include "Player.h"
-#include "Game.h"
 #include "Cube.h"
 #include "Skybox.h"
+#include "World.h"
+#include "Game.h"
 
 using namespace std;
 
@@ -65,7 +66,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void processInput(GLFWwindow *window);
 
 // Rendering
-GLuint cubeTexId;
+GLuint grassTexId;
+GLuint dirtTexId;
 GLuint waterTexId;
 Shader cubeShader;
 Shader waterShader;
@@ -73,7 +75,7 @@ Shader waterShader;
 Skybox skybox = Skybox();
 
 Game game = Game(800, 600);
-
+World world = World();
 // Initialize static vao members
 GLuint Cube::vao;
 GLuint Skybox::vao;
@@ -97,6 +99,44 @@ void renderBg() {
 }
 
 void render() {
+
+	// TODO: Get block below player's feet. See if player is grounded.
+	// If not, make an array of yCoords for the player to get to the ground.
+	game.player.grounded = game.player.camera.position.y == game.player.height;
+	Cube blockUnderFeet;
+	//for each (Cube c in game.world.blocks) {
+	for (std::vector<Cube>::iterator it = game.world.blocks.begin(); it != game.world.blocks.end(); ++it) {
+		Cube & c = *it;
+
+		if (
+			(game.player.camera.position.x >= c.position.x - .5f && game.player.camera.position.x <= c.position.x + .5f)
+			&&
+			(game.player.camera.position.z >= c.position.z - .5f && game.player.camera.position.z <= c.position.z + .5f)
+			) {
+			c.markedForGreatness = true;
+			c.shader = &waterShader;
+			c.textureId = waterTexId;
+			printf("Block under feet: %f %f %f\n", c.position.x, c.position.y, c.position.z);
+		}
+	}
+
+
+	if (game.player.yCoords.size() > 0) {
+		// Update y coords of camera
+		game.player.camera.position.y = game.player.yCoords[0];
+		game.player.yCoords.erase(game.player.yCoords.begin());
+	}
+	else {
+		// Done with the jump.
+		game.player.jumping = false;
+	}
+
+	if (!game.player.grounded && game.player.yCoords.size() == 0) {
+		// See if we 
+
+	}
+
+
     auto view = game.player.camera.getView();
 
     glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 1000.0f);
@@ -112,15 +152,6 @@ void render() {
     glDepthMask(GL_TRUE);
 
 
-	for (int x = 0; x < 1600; x+=10) {
-		float myX = (float)x / (float)10;
-		for (int z = 0; z < 1000; z += 10) {
-			float myZ = (float)z / (float)10;
-
-			auto cube = Cube(glm::vec3(myX, 0.f, myZ), cubeShader);
-			cube.Render(cubeTexId);
-		}
-	}
 
 	waterShader.use();
 
@@ -132,16 +163,8 @@ void render() {
 	waterShader.setFloat("time", time);
 
 
-	// draw water blocks
-	for (int x = 0; x < 100; x+=10) {
-		float myX = (float)x / (float)10;
-		for (int z = 0; z < 1000; z += 10) {
-			float myZ = (float)z / (float)10;
 
-			auto cube = Cube(glm::vec3(-myX - 1, 0.f, myZ), waterShader);
-			cube.Render(waterTexId);
-		}
-	}
+	game.world.Render();
 
     glBindVertexArray(0);
 
@@ -197,13 +220,14 @@ int main(int argc, char *argv[]) {
     // Load vertices and setup attributes
     init();
 
+	// TODO: Refactor this, move to class for loading textures
     // Configure the grass texture
     Cube::bindVao();
-    glGenTextures(1, &cubeTexId);
+    glGenTextures(1, &grassTexId);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, cubeTexId);
+    glBindTexture(GL_TEXTURE_2D, grassTexId);
     
-    printf("cubeTexId: %i\n", cubeTexId);
+    printf("grassTexId: %i\n", grassTexId);
 
     sf::Image image;
 
@@ -215,6 +239,23 @@ int main(int argc, char *argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// Dirt texture
+    glGenTextures(1, &dirtTexId);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, dirtTexId);
+    
+    printf("dirtTexId: %i\n", dirtTexId);
+
+    image.loadFromFile(ResourceFile("Dirt.png"));
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+	cubeShader.setInt("theTexture", 0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 
 	// Water texture
     glGenTextures(1, &waterTexId);
@@ -239,6 +280,38 @@ int main(int argc, char *argv[]) {
     GLint e = glGetError();
 
     printf("%i\r", e);
+
+
+	// Some world blocks
+	for (int x = 0; x < 1600; x += 10) {
+		float myX = (float)x / (float)10;
+		for (int z = 0; z < 1000; z += 10) {
+			float myZ = (float)z / (float)10;
+
+			auto cube = Cube(glm::vec3(myX, 0.f, myZ), cubeShader, grassTexId);
+			game.world.blocks.push_back(cube);
+		}
+	}
+
+	{
+		// One off cube sitting above our floor
+		auto cube = Cube(glm::vec3(5, 1.0f, 5), cubeShader, dirtTexId);
+		game.world.blocks.push_back(cube);
+	}
+
+	// draw water blocks
+	for (int x = 0; x < 100; x += 10) {
+		float myX = (float)x / (float)10;
+		for (int z = 0; z < 1000; z += 10) {
+			float myZ = (float)z / (float)10;
+
+			auto cube = Cube(glm::vec3(-myX - 1, 0.f, myZ), waterShader, waterTexId);
+			game.world.blocks.push_back(cube);
+		}
+	}
+
+
+
 
     auto t_start = chrono::high_resolution_clock::now();
 
@@ -293,7 +366,9 @@ void processInput(GLFWwindow *window) {
 		game.player.camera.position += glm::normalize(glm::cross(game.player.camera.front, game.player.camera.up)) * game.player.camera.speed;
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		game.player.camera.position.y += game.player.camera.speed;
+		if (game.freeFly) {
+			game.player.camera.position.y += game.player.camera.speed;
+		}
 	}
 
     // Handle shift
@@ -349,16 +424,23 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, true);
 	}
 
-    if (key == GLFW_KEY_MINUS) {
+    if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
         game.player.camera.speed -= 0.1f;
         if (game.player.camera.speed <= 0.f) {
             game.player.camera.speed = 0.1f;
         }
     }
 
-    if (key == GLFW_KEY_EQUAL) {
+    if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS) {
         game.player.camera.speed += 0.1f;
     }
+
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+		if (!game.freeFly) {
+			game.player.Jump();
+		}
+	}
+
 
 }
 

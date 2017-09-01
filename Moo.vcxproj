@@ -90,10 +90,11 @@
     <ClInclude Include="src\Skybox.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\targetver.h" />
+    <ClInclude Include="src\World.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Screenshot.png" />
-    <Image Include="src\dirt.jpg" />
+    <Image Include="src\Dirt.png" />
     <Image Include="src\DirtGrass.png" />
     <Image Include="src\grass.png" />
     <Image Include="src\sky.png" />
