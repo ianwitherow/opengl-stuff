@@ -69,7 +69,7 @@ private:
 			file.seekg(0, ios::beg);
 			file.read(memblock, size);
 			file.close();
-			memblock[size] = '\0';
+			memblock[(int)size] = '\0';
 			cout << "file " << fname << " loaded" << endl;
 		}
 		else {

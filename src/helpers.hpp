@@ -12,7 +12,13 @@
 
 using namespace std;
 
+string ResourceFile(string filename) {
+	#ifdef _WIN32
+		return "src/" + filename;
+	#endif
 
+	return filename;
+}
 
 
 

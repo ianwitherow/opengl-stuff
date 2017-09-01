@@ -22,37 +22,40 @@ public:
 
     glm::mat4 getView() {
 
-        return glm::lookAt(
+		glm::mat4 lookAt = glm::lookAt(
              position,
              position + front,
              up
          );
+
+
+		return lookAt;
     }
 
     void moveForward(bool freeFly) {
         if (!freeFly) {
-            printf("Not in free fly");
+            printf("Not in free fly\n");
             // If not in freefly, don't allow moving up or down
             this->position += speed * glm::vec3(front.x, 0.f, front.z);
         } else {
-            printf("In free fly");
+            printf("In free fly\n");
             this->position += speed * front;
-            printf("%f %f %f", position.x, position.y, position.z);
         }
+		printf("moveForward: %f %f %f\n", position.x, position.y, position.z);
     }
     
     void handleMouseMove(double xpos, double ypos) {
         if (firstMouse) {
-            lastX = xpos;
-            lastY = ypos;
+            lastX = (float)xpos;
+            lastY = (float)ypos;
             firstMouse = false;
         }
 
-        float xoffset = xpos - lastX;
-        float yoffset = ypos - lastY;
+        float xoffset = (float)xpos - lastX;
+        float yoffset = (float)ypos - lastY;
 
-        lastX = xpos;
-        lastY = ypos;
+        lastX = (float)xpos;
+        lastY = (float)ypos;
 
         xoffset *= mouseSensitivity;
         yoffset *= mouseSensitivity;

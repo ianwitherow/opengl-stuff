@@ -79,11 +79,15 @@
     <None Include="src\water.frag" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Cube.h" />
+    <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\helpers.hpp" />
     <ClInclude Include="src\moo_includes.h" />
+    <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\ResourcePath.hpp" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Skybox.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\targetver.h" />
   </ItemGroup>
