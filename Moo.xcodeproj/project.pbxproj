@@ -22,7 +22,6 @@
 		3C103D431F43F84E00935C61 /* grass.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C103D421F43F84E00935C61 /* grass.png */; };
 		3C103D4B1F4404F600935C61 /* libSOIL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C103D4A1F4404F600935C61 /* libSOIL.dylib */; };
 		3C103D4D1F44050800935C61 /* libSOIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C103D4C1F44050800935C61 /* libSOIL.a */; };
-		3C6C0DEA1F44130700A87ECD /* dirt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3C6C0DE91F44130700A87ECD /* dirt.jpg */; };
 		3C6C0DEC1F4418EE00A87ECD /* water.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3C6C0DEB1F4418EE00A87ECD /* water.frag */; };
 		3C94D7BF1F429B7A00F211FC /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C94D7BE1F429B7A00F211FC /* OpenGL.framework */; };
 		3C94D7C11F429B8100F211FC /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C94D7C01F429B8100F211FC /* GLUT.framework */; };
@@ -31,6 +30,7 @@
 		3C94D7D01F42A04300F211FC /* minimal.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3C94D7CF1F42A04300F211FC /* minimal.frag */; };
 		3CA1E4C31F428E8D00B338EB /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CA1E4C21F428E8D00B338EB /* ResourcePath.mm */; };
 		3CA1E4C61F428E8D00B338EB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA1E4C51F428E8D00B338EB /* main.cpp */; };
+		3CBA20101F5A7A3000657955 /* Dirt.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CBA200F1F5A7A3000657955 /* Dirt.png */; };
 		3CEAF30B1F468E0A0004CC7E /* color.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3CEAF3081F468E0A0004CC7E /* color.frag */; };
 		3CEAF30C1F468E0A0004CC7E /* minimalTex.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3CEAF3091F468E0A0004CC7E /* minimalTex.vert */; };
 		3CEAF30D1F468E0A0004CC7E /* water.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3CEAF30A1F468E0A0004CC7E /* water.jpg */; };
@@ -68,7 +68,6 @@
 		3C103D421F43F84E00935C61 /* grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grass.png; sourceTree = "<group>"; };
 		3C103D4A1F4404F600935C61 /* libSOIL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSOIL.dylib; path = ../../../../../../opt/local/lib/libSOIL.dylib; sourceTree = "<group>"; };
 		3C103D4C1F44050800935C61 /* libSOIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSOIL.a; path = ../../../../../../opt/local/lib/libSOIL.a; sourceTree = "<group>"; };
-		3C6C0DE91F44130700A87ECD /* dirt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dirt.jpg; sourceTree = "<group>"; };
 		3C6C0DEB1F4418EE00A87ECD /* water.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = water.frag; sourceTree = "<group>"; };
 		3C94D7BE1F429B7A00F211FC /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		3C94D7C01F429B8100F211FC /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -83,6 +82,7 @@
 		3CA1E4C51F428E8D00B338EB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		3CBA200D1F59166600657955 /* Cube.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cube.h; sourceTree = "<group>"; };
 		3CBA200E1F59166600657955 /* Skybox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skybox.h; sourceTree = "<group>"; };
+		3CBA200F1F5A7A3000657955 /* Dirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Dirt.png; sourceTree = "<group>"; };
 		3CE34B7F1F4E97EA00EB0EAB /* helpers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = helpers.hpp; sourceTree = "<group>"; };
 		3CE34B811F4E9AB200EB0EAB /* moo_includes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = moo_includes.h; sourceTree = "<group>"; };
 		3CEAF3081F468E0A0004CC7E /* color.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = color.frag; sourceTree = "<group>"; };
@@ -141,6 +141,7 @@
 		3CA1E4BF1F428E8D00B338EB /* src */ = {
 			isa = PBXGroup;
 			children = (
+				3CBA200F1F5A7A3000657955 /* Dirt.png */,
 				3CBA200D1F59166600657955 /* Cube.h */,
 				3CBA200E1F59166600657955 /* Skybox.h */,
 				3C00EF611F57EB9A00B71332 /* Game.h */,
@@ -184,7 +185,6 @@
 				3CEAF3091F468E0A0004CC7E /* minimalTex.vert */,
 				3CEAF30A1F468E0A0004CC7E /* water.jpg */,
 				3C6C0DEB1F4418EE00A87ECD /* water.frag */,
-				3C6C0DE91F44130700A87ECD /* dirt.jpg */,
 				3C103D421F43F84E00935C61 /* grass.png */,
 				3C94D7CD1F42A01600F211FC /* minimal.vert */,
 				3C94D7CF1F42A04300F211FC /* minimal.frag */,
@@ -253,8 +253,8 @@
 			files = (
 				3C0DC5D31F569FFA00CA14F9 /* skybox_top.png in Resources */,
 				3C103D431F43F84E00935C61 /* grass.png in Resources */,
+				3CBA20101F5A7A3000657955 /* Dirt.png in Resources */,
 				3C94D7CE1F42A01600F211FC /* minimal.vert in Resources */,
-				3C6C0DEA1F44130700A87ECD /* dirt.jpg in Resources */,
 				3C0DC5C71F568C0400CA14F9 /* skybox.vert in Resources */,
 				3C0DC5CF1F569FFA00CA14F9 /* skybox_bottom.png in Resources */,
 				3CEAF30D1F468E0A0004CC7E /* water.jpg in Resources */,

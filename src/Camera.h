@@ -7,7 +7,7 @@ public:
     glm::vec3 front;
     glm::vec3 up;
 
-    float speed = 0.1f;
+    float speed = 0.2f;
     float Yaw = -180.0f;
     float Pitch = 0.0f;
     float mouseSensitivity = 0.1f;
@@ -34,14 +34,11 @@ public:
 
     void moveForward(bool freeFly) {
         if (!freeFly) {
-            printf("Not in free fly\n");
             // If not in freefly, don't allow moving up or down
-            this->position += speed * glm::vec3(front.x, 0.f, front.z);
+            this->position += speed * glm::normalize(glm::vec3(front.x, 0.f, front.z));
         } else {
-            printf("In free fly\n");
             this->position += speed * front;
         }
-		printf("moveForward: %f %f %f\n", position.x, position.y, position.z);
     }
     
     void handleMouseMove(double xpos, double ypos) {
