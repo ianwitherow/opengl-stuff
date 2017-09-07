@@ -99,10 +99,8 @@ void renderBg() {
 
 void render() {
 
-    // TODO: Get block below player's feet. See if player is grounded.
-    // If not, make an array of yCoords for the player to get to the ground.
-
     Cube* blockUnderFeet = nullptr;
+
     //for each (Cube c in game.world.blocks) {
     for (std::vector<Cube>::iterator it = game.world.blocks.begin(); it != game.world.blocks.end(); ++it) {
         Cube & c = *it;
@@ -128,56 +126,38 @@ void render() {
         //printf("Block under feet: %f %f %f\n", blockUnderFeet->position.x,blockUnderFeet->position.y,blockUnderFeet->position.z);
 
         if (!game.freeFly) {
-            if (!game.player.jumping && game.player.yCoords.size() == 0 && (game.player.camera.position.y - game.player.height) > blockUnderFeet->position.y) {
-                // Player needs to get down to that block
-                //game.player.fallTo(blockUnderFeet->position.y);
-                if (game.player.fallStart == 0.f) {
-                    game.player.fallStart = (float)glfwGetTime() / 10;
-                }
-                game.player.falling = true;
-                float gravity = 5.0f;
-                float elapsed = game.player.fallStart - ((float)glfwGetTime() / 10);
-                printf("%f\n", elapsed);
-                game.player.yVelocity += gravity * elapsed;
-                game.player.camera.position.y -= game.player.yVelocity * elapsed;
+            if (game.player.yVelocity <= 0.f && (game.player.camera.position.y - game.player.height) > blockUnderFeet->position.y + .5f) {
+                game.player.fall();
             }
 
-            if ((game.player.falling || game.player.jumping) && blockUnderFeet && game.player.camera.position.y <= blockUnderFeet->position.y + game.player.height) {
-                game.player.camera.position.y = blockUnderFeet->position.y + game.player.height;
-                //game.player.yCoords.clear();
+            // jumping
+            if (game.player.yVelocity > 0.f) {
+                printf("Going up!\n");
+                if (game.player.jumpStart == 0.f) {
+                    game.player.jumpStart = (float)glfwGetTime() / 10;
+                }
+                float gravity = 1.51f;
+                float elapsed = ((float)glfwGetTime() / 10) - game.player.jumpStart;
+                float t = -elapsed;
+
+                float v0 = sqrt(0.667f * game.player.height * gravity);
+                game.player.yVelocity += (v0 * t) - 0.5 * gravity * t * t;
+                game.player.camera.position.y += game.player.yVelocity;
+            }
+
+
+            if ((game.player.falling || game.player.jumping) && blockUnderFeet && game.player.camera.position.y <= blockUnderFeet->position.y + .5 + game.player.height) {
+                game.player.camera.position.y = blockUnderFeet->position.y + .5 + game.player.height;
                 game.player.falling = false;
                 game.player.fallStart = 0.f;
+                game.player.yVelocity = 0.f;
+                game.player.jumpStart = 0.f;
                 //game.player.jumping = false;
                 printf("Ground from fall!\n");
             }
             
             
         }
-    }
-
-    if (game.player.yCoords.size() > 0) {
-        // Update y coords of camera
-        // See if we've hit the ground
-        if ((game.player.falling || game.player.jumping) && blockUnderFeet && game.player.yCoords[0] <= blockUnderFeet->position.y + game.player.height) {
-            //
-            game.player.camera.position.y = blockUnderFeet->position.y + game.player.height;
-            game.player.yCoords.clear();
-            game.player.falling = false;
-            game.player.jumping = false;
-            printf("Ground from jump!\n");
-        } else {
-            game.player.camera.position.y = game.player.yCoords[0];
-            game.player.yCoords.erase(game.player.yCoords.begin());
-        }
-    }
-    else {
-        // Done with the jump.
-        game.player.jumping = false;
-    }
-
-    if (!game.player.grounded && game.player.yCoords.size() == 0) {
-        // See if we 
-
     }
 
     auto view = game.player.camera.getView();
@@ -317,7 +297,7 @@ int main(int argc, char *argv[]) {
 
     printf("%i\r", e);
 
-    // Some world blocks
+    // Some world blocks - main floor
     for (int x = 0; x < 160; x++) {
         float myX = (float)x;
         for (int z = 0; z < 100; z ++) {
@@ -328,7 +308,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Level down for fall testing
+    // Level down for fall testing - small platform one block lower than main floor
     for (int x = 0; x < 20; x++) {
         float myX = (float)x;
         for (int z = 0; z < 10; z++) {
@@ -367,7 +347,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // draw water blocks
+    // some water blocks
     for (int x = 0; x < 10; x ++) {
         float myX = (float)x;
         for (int z = 0; z < 100; z++) {
@@ -377,6 +357,21 @@ int main(int argc, char *argv[]) {
             game.world.blocks.push_back(cube);
         }
     }
+
+
+    // Base floor, way down
+    // Can't do this yet. Need to optimize first!
+    /*
+    for (int x = -160; x < 160; x++) {
+        float myX = (float)x;
+        for (int z = -160; z < 100; z ++) {
+            float myZ = (float)z;
+
+            auto cube = Cube(glm::vec3(myX, -300, myZ), cubeShader, grassTexId);
+            game.world.blocks.push_back(cube);
+        }
+    }
+     */
 
     //auto t_start = chrono::high_resolution_clock::now();
 
@@ -474,6 +469,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     // Toggle free fly
     if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
         game.freeFly = !game.freeFly;
+        if (game.freeFly) {
+            game.player.camera.speed = 0.4f;
+        } else {
+            game.player.camera.speed = 0.23f;
+        }
     }
 
     if (key == GLFW_KEY_Q && action == GLFW_PRESS) {

@@ -7,7 +7,7 @@ public:
     glm::vec3 front;
     glm::vec3 up;
 
-    float speed = 0.2f;
+    float speed = 0.23f;
     float Yaw = -180.0f;
     float Pitch = 0.0f;
     float mouseSensitivity = 0.1f;
